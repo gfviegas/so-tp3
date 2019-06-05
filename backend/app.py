@@ -1,13 +1,17 @@
 from flask import Flask, Blueprint
 from flask_restful import Resource, Api
 
+from model.Block import Block
+from model.Disk import Disk
+from model.SuperBlock import SuperBlock
+
 app = Flask(__name__)
 bp = Blueprint('api', __name__)
 api = Api(bp)
 
 class HelloWorld(Resource):
     def get(self):
-        return {'hello': 'world'}, 200
+        return {'Viegas': Block.teste()}, 200
 
 
 api.add_resource(HelloWorld, '/')
