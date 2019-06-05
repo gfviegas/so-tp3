@@ -1,6 +1,14 @@
 version: '3.7'
 
 services:
+  redis:
+    image: redis
+    container_name: ecocard-cache
+    volumes:
+      - ./tmp:/data
+    ports:
+      - 6379:6379
+
   backend:
     build:
       context: ./backend
@@ -10,6 +18,10 @@ services:
       - ./backend/:/code
     ports:
       - 81:5000
+    links:
+      - redis
+    depends_on:
+      - redis
 
   frontend:
     build:
