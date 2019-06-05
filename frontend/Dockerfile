@@ -8,10 +8,11 @@ WORKDIR /code
 ENV PATH /code/node_modules/.bin:$PATH
 
 # Instalando módulos
+RUN yarn add global react-scripts@3.0.1 --silent
+
 COPY package.json .
 COPY yarn.lock .
 RUN yarn --silent
-RUN yarn add global react-scripts@3.0.1 --silent
 
 # Inciando
 CMD ["yarn", "start"]
