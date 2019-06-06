@@ -12,6 +12,7 @@ rm.connect()
 
 # Carregando RESTful Resources
 from api.resources.setup import Setup
+from api.resources.simulations import Simulations
 
 # Boot Flask App e API
 app = Flask(__name__)
@@ -20,6 +21,7 @@ api = Api(bp)
 
 # Adicionando Resources
 api.add_resource(Setup, '/')
+api.add_resource(Simulations, '/simulations')
 
 # Registrando Blueprint
 app.register_blueprint(bp, url_prefix='/api')
