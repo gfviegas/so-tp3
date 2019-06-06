@@ -1,4 +1,4 @@
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 import uuid
 from api.settings.redis import rm
@@ -9,10 +9,16 @@ class Simulations(Resource):
         return {'simulations': sim}, 200
 
     def post(self):
-        id = str(uuid.uuid4())[:8]
-        s = rm.redis.sadd('simulations', id)
+        parser = reqparse.RequestParser()
+        parser.add_argument('blockSize', type=int, required=True, help='Tamanho do bloco')
+        parser.add_argument('numBlocks', type=int, required=True, help='Quantidade de blocos')
 
-        # Criar simulacao...
+        args = parser.parse_args(strict=True)
+        id = str(uuid.uuid4())[:8]
+
+        # TODO: Criar simulacao...
+
+        s = rm.redis.sadd('simulations', id)
         return {'status': s, 'id': id}, 201
 
     def delete(self, id):

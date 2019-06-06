@@ -44,7 +44,7 @@ const styles = theme => ({
 })
 
 class Splash extends React.Component {
-  state = { simulations: [], formVisible: true }
+  state = { simulations: [], formVisible: false }
 
   async componentDidMount () {
     const { simulations } = await this.fetchSimulations()
