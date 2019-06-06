@@ -6,6 +6,7 @@ import { routes } from '../routes'
 function RouteWithSubRoutes (route) {
   return (
     <Route
+      key={route.path}
       exact={route.exact}
       path={route.path}
       render={props => (

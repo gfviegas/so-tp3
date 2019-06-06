@@ -4,19 +4,11 @@ import axios from 'axios'
 
 import { withStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import Box from '@material-ui/core/Box'
 import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
-import Link from '@material-ui/core/Link'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import Divider from '@material-ui/core/Divider'
-import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt'
-import Button from '@material-ui/core/Button'
 
+import WelcomeBox from './welcomeBox'
+import NewSimulation from './newSimulation'
 import background from '../../assets/images/geometric.jpg'
 
 const styles = theme => ({
@@ -52,11 +44,10 @@ const styles = theme => ({
 })
 
 class Splash extends React.Component {
-  state = { simulations: [] }
+  state = { simulations: [], formVisible: true }
 
   async componentDidMount () {
     const { simulations } = await this.fetchSimulations()
-    console.log(simulations)
     this.setState({ simulations })
   }
 
@@ -65,35 +56,17 @@ class Splash extends React.Component {
     return response.data
   }
 
-  customFooter () {
-    return (
-      <footer>
-        <Typography variant='body2' color='textSecondary' align='center'> Sistemas Operacionais - Ciência da Computação </Typography>
-        <hr />
-        <Typography variant='body2' color='textSecondary' align='center'> Universidade Federal de Viçosa, Campus Florestal </Typography>
-      </footer>
-    )
+  currentComponent = () => {
+    const { formVisible, simulations } = this.state
+    if (formVisible) {
+      return <NewSimulation visible={formVisible} toggleForm={this.toggleForm} />
+    }
+
+    return <WelcomeBox simulations={simulations} showForm={this.toggleForm} />
   }
 
-  simulationList (classes) {
-    if (!this.state.simulations || !this.state.simulations.length) return
-
-    return this.state.simulations.map(s => (
-      <List className={classes.root}>
-        <ListItem key={s}>
-          <Link className={classes.link}>
-            <ListItemIcon>
-              <ArrowRightAltIcon />
-            </ListItemIcon>
-          </Link>
-
-          <Link className={classes.link}>
-            <ListItemText primary={`Simulação #` + s} />
-          </Link>
-        </ListItem>
-        <Divider variant='inset' component='li' />
-      </List>
-    ))
+  toggleForm = (e) => {
+    this.setState(state => ({ formVisible: !state.formVisible }))
   }
 
   render () {
@@ -102,20 +75,8 @@ class Splash extends React.Component {
     return (
       <Container component='main' maxWidth='md'>
         <CssBaseline />
-        <Paper className={classes.paper}>
-          <Typography variant='h2' color='textPrimary' align='center'> FileSystem Simulator </Typography>
-          <Box mt={5} className={classes.innerBox}>
-            <div>
-              <p>Seja bem-vindo ao Simulador de Sistema de Arquivos!</p>
-              <p>Crie uma nova simulação ou escolha uma existente na lista abaixo para retomar uma simulação antiga.</p>
-            </div>
-
-            {this.simulationList(classes)}
-            <Button variant='contained' size='large' color='secondary' className={classes.createBtn}> Nova Simulação </Button>
-          </Box>
-          <Box mt={5}>
-            {this.customFooter()}
-          </Box>
+        <Paper elevation={24} className={classes.paper}>
+          {this.currentComponent()}
         </Paper>
       </Container>
     )
