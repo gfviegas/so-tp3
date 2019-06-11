@@ -32,7 +32,7 @@ const Logo = (props) => {
     <Zoom in style={{ transitionDelay: '300ms' }} timeout={1500}>
       <article>
         <section className={classes.logoWrapper}>
-          <img src={logo} className={classes.logo} />
+          <img src={logo} className={classes.logo} alt='Logo' />
         </section>
         <section>
           <Typography variant='h1' color='textPrimary' align='center' className={classes.title}> TopHat FSS </Typography>
