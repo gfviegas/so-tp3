@@ -7,6 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
 
+import Logo from '../logo'
 import WelcomeBox from './welcomeBox'
 import NewSimulation from './newSimulation'
 import background from '../../assets/images/geometric.jpg'
@@ -22,24 +23,12 @@ const styles = theme => ({
   paper: {
     padding: theme.spacing(5),
     marginTop: theme.spacing(8),
+    marginBottom: theme.spacing(4),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
     minHeight: theme.spacing(80)
-  },
-  innerBox: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    minHeight: theme.spacing(70)
-  },
-  createBtn: {
-    alignSelf: 'center',
-    textAlign: 'center'
-  },
-  link: {
-    cursor: 'pointer'
   }
 })
 
@@ -76,6 +65,7 @@ class Splash extends React.Component {
       <Container component='main' maxWidth='md'>
         <CssBaseline />
         <Paper elevation={24} className={classes.paper}>
+          <Logo />
           {this.currentComponent()}
         </Paper>
       </Container>

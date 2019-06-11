@@ -13,9 +13,9 @@ const routes = [
     exact: true
   },
   {
-    path: '/home',
+    path: '/simulacao/:simulationId',
     component: Home,
-    header: () => <span>  Home </span>,
+    header: () => <span> Home </span>,
     exact: true
   },
   {
