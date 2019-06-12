@@ -10,6 +10,8 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import ReactTerminal, { ReactThemes } from 'react-terminal-component'
+import { EmulatorState, OutputFactory, Outputs } from 'javascript-terminal'
 
 import Header from '../header'
 import background from '../../assets/images/geometric.jpg'
@@ -65,11 +67,26 @@ const styles = theme => ({
 })
 
 class SimulationExpress extends React.Component {
-  state = { loading: false }
-
   constructor (props) {
     super(props)
     this.fileInput = React.createRef()
+
+    const emulatorState = EmulatorState.createEmpty()
+    const outputs = emulatorState.getOutputs()
+
+    this.state = { loading: false, emulatorState, outputs }
+  }
+
+  componentDidMount () {
+    this.addRecord('****** Terminal Output ******')
+  }
+
+  addRecord = (output) => {
+    const { emulatorState } = this.state
+    let outputs = emulatorState.getOutputs()
+
+    outputs = Outputs.addRecord(outputs, OutputFactory.makeTextOutput(output))
+    this.setState({ outputs, emulatorState: emulatorState.setOutputs(outputs) })
   }
 
   openFileInput = () => {
@@ -78,16 +95,16 @@ class SimulationExpress extends React.Component {
 
   fileInputChange = (e) => {
     const { files } = e.target
-    console.log(files)
 
     this.setState({ loading: true })
     setTimeout(() => {
+      this.addRecord(`\n \t Carregado o arquivo ${files[0].name}.`)
       this.setState({ loading: false })
     }, 4000)
   }
 
   render () {
-    const { loading } = this.state
+    const { loading, emulatorState } = this.state
     const { classes, match } = this.props
 
     return (
@@ -113,7 +130,7 @@ class SimulationExpress extends React.Component {
 
             <Grid item xs={7}>
               <Paper elevation={24} className={classes.paper}>
-                <p> {JSON.stringify(match)} </p>
+                <ReactTerminal theme={ReactThemes.dye} acceptInput={false} emulatorState={emulatorState} />
               </Paper>
             </Grid>
 

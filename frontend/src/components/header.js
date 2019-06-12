@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Route, NavLink } from 'react-router-dom'
-import { routes } from '../routes'
+import { NavLink } from 'react-router-dom'
 
 import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
