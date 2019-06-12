@@ -1,0 +1,5 @@
+pwd
+mkdir folderTest
+cd folderTest
+touch fileTest
+cd /

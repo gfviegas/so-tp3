@@ -54,11 +54,11 @@ class SimulationHome extends React.Component {
 
     return (
       <section>
+        <CssBaseline />
         <Header match={match} />
         <Grid container spacing={2} className={classes.gridContainer}>
           <Grid item xs={2}>
             <Container component='main' maxWidth='md'>
-              <CssBaseline />
               <Paper elevation={24} className={classes.paper}>
                 <p> {JSON.stringify(match)} </p>
               </Paper>
@@ -67,7 +67,6 @@ class SimulationHome extends React.Component {
 
           <Grid item xs={6}>
             <Container component='main' maxWidth='md'>
-              <CssBaseline />
               <Paper elevation={24} className={classes.paper}>
                 <p> {JSON.stringify(match)} </p>
               </Paper>
@@ -76,7 +75,6 @@ class SimulationHome extends React.Component {
 
           <Grid item xs={4}>
             <Container component='main' maxWidth='md'>
-              <CssBaseline />
               <Paper elevation={24} className={classes.paper}>
                 <p> {JSON.stringify(match)} </p>
               </Paper>
