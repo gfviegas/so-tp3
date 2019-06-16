@@ -9,6 +9,7 @@ import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
 
 import Header from '../header'
+import FileTree from './fileTree'
 import background from '../../assets/images/geometric.jpg'
 
 const styles = theme => ({
@@ -20,11 +21,28 @@ const styles = theme => ({
       backgroundSize: 'cover'
     }
   },
+  root: {
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  paper: {
+    padding: theme.spacing(3),
+    marginBottom: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between'
+  },
   gridContainer: {
+    marginTop: theme.spacing(2),
     width: '100%'
   },
-  root: {
-    alignContent: 'center'
+  fileTreeContainer: {
+    display: 'flex',
+    flexGrow: 1
+  },
+  fileTree: {
+    width: '100%'
   }
 })
 
@@ -51,37 +69,47 @@ class SimulationHome extends React.Component {
   }
 
   render () {
+    const inode = {
+      wd: '/',
+      items: [
+        { title: 'usr', type: 'folder' },
+        { title: 'etc', type: 'folder' },
+        { title: 'var', type: 'folder' },
+        { title: 'log', type: 'folder' },
+        { title: '2.txt', type: 'file' },
+        { title: '3.txt', type: 'file' }
+      ]
+    }
+
     const { classes, match } = this.props
 
     return (
       <section>
         <CssBaseline />
         <Header match={match} />
-        <Grid container spacing={2} className={classes.gridContainer}>
-          <Grid item xs={2}>
-            <Container component='main' maxWidth='md'>
-              <Paper elevation={24} className={classes.paper}>
-                <p> {JSON.stringify(match)} </p>
-              </Paper>
-            </Container>
-          </Grid>
+        <div className={classes.root}>
+          <Grid container spacing={2} className={classes.gridContainer}>
+            <Grid item xs={2}>
+              <Container component='main' maxWidth='md'>
+                <Paper elevation={24} className={classes.paper}>
+                  <p> {JSON.stringify(match)} </p>
+                </Paper>
+              </Container>
+            </Grid>
 
-          <Grid item xs={6}>
-            <Container component='main' maxWidth='md'>
-              <Paper elevation={24} className={classes.paper}>
-                <p> {JSON.stringify(match)} </p>
+            <Grid item xs={4}>
+              <Paper elevation={24} className={[classes.paper, classes.fileTreeContainer].join(' ')}>
+                <FileTree className={classes.fileTree} inode={inode} />
               </Paper>
-            </Container>
-          </Grid>
+            </Grid>
 
-          <Grid item xs={4}>
-            <Container component='main' maxWidth='md'>
+            <Grid item xs={6}>
               <Paper elevation={24} className={classes.paper}>
                 <p> {JSON.stringify(match)} </p>
               </Paper>
-            </Container>
+            </Grid>
           </Grid>
-        </Grid>
+        </div>
       </section>
     )
   }
