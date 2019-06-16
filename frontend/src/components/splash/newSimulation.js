@@ -91,7 +91,7 @@ class NewSimulation extends React.Component {
       this.setState({ snackbarParams: { msg: `Simulação criada! #${data.id}. Redirecionando...`, variant: 'success' } })
 
       window.setTimeout(() => {
-        history.push(`/simulacao/${data.id}`)
+        history.push(`/simulacao/${data.id}/express`)
       }, 2000)
     } catch (e) {
       this.setState({ snackbarParams: { msg: `Erro! ${e.message}`, variant: 'error' } })

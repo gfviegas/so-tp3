@@ -57,10 +57,10 @@ class Header extends React.Component {
             <Typography variant='h6' className={classes.title}> TopHat FSS </Typography>
 
             <Button color='inherit'>
-              <NavLink exact to={`/simulacao/${simulationId}`} activeClassName={classes.linkActive} className={classes.headerLink}> Interativo </NavLink>
+              <NavLink exact to={`/simulacao/${simulationId}/express`} activeClassName={classes.linkActive} className={classes.headerLink}> Express </NavLink>
             </Button>
             <Button color='inherit'>
-              <NavLink exact to={`/simulacao/${simulationId}/express`} activeClassName={classes.linkActive} className={classes.headerLink}> Express </NavLink>
+              <NavLink exact to={`/simulacao/${simulationId}`} activeClassName={classes.linkActive} className={classes.headerLink}> Interativo </NavLink>
             </Button>
             <Button color='inherit'>
               <NavLink exact to={`/`} className={classes.headerLink}> Sair </NavLink>
