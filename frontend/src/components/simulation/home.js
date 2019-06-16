@@ -7,6 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
 
 import Header from '../header'
 import FileTree from './fileTree'
@@ -35,6 +36,7 @@ const styles = theme => ({
   },
   gridContainer: {
     marginTop: theme.spacing(2),
+    justifyContent: 'space-around',
     width: '100%'
   },
   fileTreeContainer: {
@@ -43,6 +45,11 @@ const styles = theme => ({
   },
   fileTree: {
     width: '100%'
+  },
+  statDescription: {
+    paddingTop: theme.spacing(2),
+    color: '#81005d',
+    fontWeight: 500
   }
 })
 
@@ -89,15 +96,22 @@ class SimulationHome extends React.Component {
         <Header match={match} />
         <div className={classes.root}>
           <Grid container spacing={2} className={classes.gridContainer}>
-            <Grid item xs={2}>
-              <Container component='main' maxWidth='md'>
-                <Paper elevation={24} className={classes.paper}>
-                  <p> {JSON.stringify(match)} </p>
-                </Paper>
-              </Container>
+            <Grid item xs={3}>
+              <Paper elevation={24} className={classes.paper}>
+                <Typography variant='h5'> Tamanho de Disco </Typography>
+                <Typography className={classes.statDescription} variant='body2'> 120 MB </Typography>
+              </Paper>
+              <Paper elevation={24} className={classes.paper}>
+                <Typography variant='h5'> Tamanho de Bloco </Typography>
+                <Typography className={classes.statDescription} variant='body2'> 2 KB </Typography>
+              </Paper>
+              <Paper elevation={24} className={classes.paper}>
+                <Typography variant='h5'> Quantidade de Blocos </Typography>
+                <Typography className={classes.statDescription} variant='body2'> 600 blocos </Typography>
+              </Paper>
             </Grid>
 
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <Paper elevation={24} className={[classes.paper, classes.fileTreeContainer].join(' ')}>
                 <FileTree className={classes.fileTree} inode={inode} />
               </Paper>
