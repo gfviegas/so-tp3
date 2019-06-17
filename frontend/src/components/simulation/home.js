@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography'
 import Header from '../header'
 import FileTree from './fileTree'
 import RenameDialog from './renameDialog'
+import CreateDialog from './createDialog'
 import background from '../../assets/images/geometric.jpg'
 
 const styles = theme => ({
@@ -90,7 +91,7 @@ class SimulationHome extends React.Component {
       size: 48
     }
 
-    this.state = { inode, currentFile, renameDialogOpen: false, renameDialogCurrentName: null }
+    this.state = { inode, currentFile, renameDialogOpen: false, renameDialogCurrentName: null, createDialogOpen: false }
     this.simulationId = props.match.params.simulationId
   }
 
@@ -163,8 +164,25 @@ class SimulationHome extends React.Component {
     this.activeItem.title = fileName
   }
 
+  createFile = () => {
+    this.setState({ createDialogOpen: true, createDialogType: 'file' })
+  }
+
+  createFolder = () => {
+    this.setState({ createDialogOpen: true, createDialogType: 'folder' })
+  }
+
+  closeCreateDialog = () => {
+    this.setState({ createDialogOpen: false })
+  }
+
+  submitCreateDialog = (payload) => {
+    console.log(payload)
+    this.closeCreateDialog()
+  }
+
   render () {
-    const { inode, currentFile, renameDialogOpen, renameDialogCurrentName } = this.state
+    const { inode, currentFile, renameDialogOpen, renameDialogCurrentName, createDialogOpen, createDialogType } = this.state
     const { classes, match } = this.props
 
     return (
@@ -190,7 +208,15 @@ class SimulationHome extends React.Component {
 
             <Grid item md={3}>
               <Paper elevation={24} className={[classes.paper, classes.fileTreeContainer].join(' ')}>
-                <FileTree className={classes.fileTree} inode={inode} onItemOpen={this.handleItemOpen} onItemDelete={this.handleItemDelete} onItemRename={this.handleItemRename} />
+                <FileTree
+                  className={classes.fileTree}
+                  inode={inode}
+                  onItemOpen={this.handleItemOpen}
+                  onItemDelete={this.handleItemDelete}
+                  onItemRename={this.handleItemRename}
+                  handleNewFile={this.createFile}
+                  handleNewFolder={this.createFolder}
+                />
               </Paper>
             </Grid>
 
@@ -208,6 +234,7 @@ class SimulationHome extends React.Component {
         </div>
 
         <RenameDialog open={renameDialogOpen} handleClose={this.closeRenameDialog} handleSubmit={this.submitRenameDialog} currentName={renameDialogCurrentName} />
+        <CreateDialog open={createDialogOpen} handleClose={this.closeCreateDialog} handleSubmit={this.submitCreateDialog} type={createDialogType} />
       </section>
     )
   }
