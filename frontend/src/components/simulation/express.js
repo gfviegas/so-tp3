@@ -120,7 +120,7 @@ class SimulationExpress extends React.Component {
         <Header match={match} />
         <div className={classes.root}>
           <Grid container spacing={4} className={classes.gridContainer}>
-            <Grid item xs={5}>
+            <Grid item md={5}>
               <Paper elevation={24} className={classes.paper}>
                 <Typography variant='h3' className={classes.title}> Modo Express </Typography>
                 <Divider />
@@ -141,7 +141,7 @@ class SimulationExpress extends React.Component {
                 <InstructionsTable />
               </Paper>
             </Grid>
-            <Grid item xs={7}>
+            <Grid item md={7}>
               <Paper elevation={24} className={[classes.paper, classes.terminal].join(' ')}>
                 <ReactTerminal theme={{ ...ReactThemes.dye, height: '100%' }} acceptInput={false} emulatorState={emulatorState} />
               </Paper>

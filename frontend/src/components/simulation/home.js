@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 
 import Header from '../header'
 import FileTree from './fileTree'
+import RenameDialog from './renameDialog'
 import background from '../../assets/images/geometric.jpg'
 
 const styles = theme => ({
@@ -65,6 +66,8 @@ const styles = theme => ({
 })
 
 class SimulationHome extends React.Component {
+  activeItem = null
+
   constructor (props) {
     super(props)
 
@@ -87,7 +90,7 @@ class SimulationHome extends React.Component {
       size: 48
     }
 
-    this.state = { inode, currentFile }
+    this.state = { inode, currentFile, renameDialogOpen: false, renameDialogCurrentName: null }
     this.simulationId = props.match.params.simulationId
   }
 
@@ -145,11 +148,23 @@ class SimulationHome extends React.Component {
   }
 
   handleItemRename = async (item) => {
-    item.title = 'TesteXele' + new Date().getUTCMilliseconds()
+    this.activeItem = item
+    this.setState({ renameDialogCurrentName: item.title, renameDialogOpen: true })
+  }
+
+  closeRenameDialog = () => {
+    this.setState({ renameDialogOpen: false })
+  }
+
+  submitRenameDialog = (fileName) => {
+    console.log(fileName)
+    this.closeRenameDialog()
+
+    this.activeItem.title = fileName
   }
 
   render () {
-    const { inode, currentFile } = this.state
+    const { inode, currentFile, renameDialogOpen, renameDialogCurrentName } = this.state
     const { classes, match } = this.props
 
     return (
@@ -158,7 +173,7 @@ class SimulationHome extends React.Component {
         <Header match={match} />
         <div className={classes.root}>
           <Grid container spacing={2} className={classes.gridContainer}>
-            <Grid item xs={3}>
+            <Grid item md={3}>
               <Paper elevation={24} className={classes.paper}>
                 <Typography variant='h5'> Tamanho de Disco </Typography>
                 <Typography className={classes.statDescription} variant='body2'> 120 MB </Typography>
@@ -173,13 +188,13 @@ class SimulationHome extends React.Component {
               </Paper>
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid item md={3}>
               <Paper elevation={24} className={[classes.paper, classes.fileTreeContainer].join(' ')}>
                 <FileTree className={classes.fileTree} inode={inode} onItemOpen={this.handleItemOpen} onItemDelete={this.handleItemDelete} onItemRename={this.handleItemRename} />
               </Paper>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item md={6}>
               <Paper elevation={24} className={classes.paper}>
                 <div className={classes.fileTitle}>
                   <Typography variant='h4'> {currentFile.title} </Typography>
@@ -191,6 +206,8 @@ class SimulationHome extends React.Component {
             </Grid>
           </Grid>
         </div>
+
+        <RenameDialog open={renameDialogOpen} handleClose={this.closeRenameDialog} handleSubmit={this.submitRenameDialog} currentName={renameDialogCurrentName} />
       </section>
     )
   }
