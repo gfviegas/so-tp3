@@ -16,6 +16,7 @@ const styles = theme => ({
   '@global': {
     body: {
       backgroundColor: '#000000',
+      backgroundAttachment: 'fixed',
       backgroundImage: `url(${background})`,
       backgroundSize: 'cover'
     }

@@ -21,6 +21,7 @@ const styles = theme => ({
   '@global': {
     body: {
       backgroundColor: '#000000',
+      backgroundAttachment: 'fixed',
       backgroundImage: `url(${background})`,
       backgroundSize: 'cover'
     }
@@ -55,14 +56,15 @@ const styles = theme => ({
     position: 'relative',
     alignSelf: 'center'
   },
-  button: {
-  },
   buttonProgress: {
     position: 'absolute',
     top: '50%',
     left: '50%',
     marginTop: -12,
     marginLeft: -12
+  },
+  terminal: {
+    height: theme.spacing(130)
   }
 })
 
@@ -78,7 +80,12 @@ class SimulationExpress extends React.Component {
   }
 
   componentDidMount () {
-    this.addRecord('****** Terminal Output ******')
+    window.setTimeout(() => {
+      for (var i = 0; i < 30; i++) {
+        this.addRecord('****** Terminal Output ******' + i)
+        this.addRecord('****** Terminal Output ******' + i)
+      }
+    }, 2000)
   }
 
   addRecord = (output) => {
@@ -126,15 +133,6 @@ class SimulationExpress extends React.Component {
                   {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
                 </label>
               </Paper>
-            </Grid>
-
-            <Grid item xs={7}>
-              <Paper elevation={24} className={classes.paper}>
-                <ReactTerminal theme={ReactThemes.dye} acceptInput={false} emulatorState={emulatorState} />
-              </Paper>
-            </Grid>
-
-            <Grid item xs={5}>
               <Paper elevation={24} className={classes.paper}>
                 <Typography variant='h6' className={classes.title}> Formato das Instruções </Typography>
                 <Typography variant='body2'>
@@ -143,6 +141,12 @@ class SimulationExpress extends React.Component {
                 <InstructionsTable />
               </Paper>
             </Grid>
+            <Grid item xs={7}>
+              <Paper elevation={24} className={[classes.paper, classes.terminal].join(' ')}>
+                <ReactTerminal theme={{ ...ReactThemes.dye, height: '100%' }} acceptInput={false} emulatorState={emulatorState} />
+              </Paper>
+            </Grid>
+
           </Grid>
         </div>
 
