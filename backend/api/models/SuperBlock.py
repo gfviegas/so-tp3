@@ -1,9 +1,18 @@
+import operator
 from Block import Block
 
 class SuperBlock(Block):
-    _totalSize #int
-    _inodesSize #int
-    _firstFreeBlock #int
+    def __init__(self, totalSize, inodeSize):
+        self._totalSize = totalSize
+        self._inodeSize = inodeSize
+        self._firstFreeBlock = self._inodeSize + 1
 
-    def __init__(self):
+    def formatBlock(self):
+        line = operator.concat(str(self._totalSize), "|")
+        line = operator.concat(line, str(self._inodeSize))
+        line = operator.concat(line, "|")
+        line = operator.concat(line, str(self._firstFreeBlock))
+        return line
+
+    def readBlock(self, block):
         pass

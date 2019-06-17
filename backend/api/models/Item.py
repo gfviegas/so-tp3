@@ -1,17 +1,29 @@
+import datetime
+
+date = datetime.datetime
+
 class Item:
-    _name #string
-    _inode #int
-    _createdAt #date
-    _uptadetAt #date
+    def __init__(self, name, inode):
+        self._createdAt = date.now()
+        self._uptadetAt = date.now()
+        self._name = name
+        self._inode = inode
 
-    def __init__(self):
-        pass
+    def rename(self, name):
+        self._name = name
+        self._uptadetAt = date.now()
 
-    def create(string name, int inode):
-        pass
+    def getCreatedAt(self):
+        return self._createdAt
 
-    def rename(string name):
-        pass
+    def getUpdatedAt(self):
+        return self._uptadetAt
 
-    def getInode(string name):
-        pass
+    def getName(self):
+        return self._name
+
+    def getInode(self):
+        return self._inode
+
+item = Item("Arquivo 1", 324324543)
+print(item.getUpdatedAt())
