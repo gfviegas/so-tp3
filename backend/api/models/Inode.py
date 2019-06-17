@@ -1,12 +1,28 @@
 import operator
+import datetime
+
+date = datetime.datetime
 
 class Inode:
-    INODESIZE = 64
+    INODESIZE = 20
+    CURRENTID = 0
 
     def __init__(self):
+        self._id = self.CURRENTID
+        self.CURRENTID += 1
+        self._createdAt = date.now()
+        self._updatedAt = date.now()
         self._flag = 0 #int
         self._fileSize = 0 #int
-        self._pointer = list() #int[]
+        self._pointer = [] #int[]
+        for i in range(4):
+            self._pointer.insert(i, 0)
+
+    def set(self, name, content, pointers):
+        self._fileSize = len(content)
+        self._updatedAt = date.now()
+        self._flag = 1
+        self._pointer = pointers
 
     def formatInode(self):
         line = operator.concat(str(self._flag), ";")
@@ -18,3 +34,4 @@ class Inode:
             if (i != len(self._pointer) - 1):
                 line = operator.concat(line, ",")
         line = operator.concat(line, "]")
+        return line

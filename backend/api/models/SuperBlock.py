@@ -16,3 +16,9 @@ class SuperBlock(Block):
 
     def readBlock(self, block):
         pass
+
+    def setFirstFreeBlock(self, firstFreeBlock):
+        self._firstFreeBlock = firstFreeBlock
+
+    def getFirstFreeBlock(self):
+        return self._firstFreeBlock
