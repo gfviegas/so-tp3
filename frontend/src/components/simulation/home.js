@@ -134,9 +134,13 @@ class SimulationHome extends React.Component {
       } catch (e) {
         console.error(e)
       }
+
+      return
     }
 
     // Se for diretorio...
+    // TODO: Chamar api, carregar o inode
+    inode.wd += `${item.title}/`
     this.setState({ inode })
   }
 
