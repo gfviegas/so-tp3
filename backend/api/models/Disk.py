@@ -8,20 +8,26 @@ class Disk(object):
     BLOCK_SIZE_MAX = 4096 # 4 KB
 
 
-    def __init__(self, num_blocks=100, block_size=1024):
-        self.num_blocks = int(num_blocks)
-        if (self.num_blocks not in range(self.NUM_BLOCKS_MIN,
+    def __init__(self, numBlocks=100, blockSize=1024):
+        self._numBlocks = int(numBlocks)
+        if (self._numBlocks not in range(self.NUM_BLOCKS_MIN,
                                          self.NUM_BLOCKS_MAX)):
-            raise Exception('num_blocks is out of range')
+            raise Exception('numBlocks is out of range')
 
-        self.block_size = int(block_size)
-        if (self.num_blocks not in range(self.NUM_BLOCKS_MIN,
-                                         self.NUM_BLOCKS_MAX)):
-            raise Exception('num_blocks is out of range')
+        self._blockSize = int(blockSize)
+        if (self._blockSize not in range(self.BLOCK_SIZE_MIN,
+                                         self.BLOCK_SIZE_MAX)):
+            raise Exception('blockSize is out of range')
 
-        self.atributoDinamico = 'nao foi declarado antes'
+    def read(blocknumber, block):
+        pass
+
+    def write(blocknumber, block):
+        pass
+
+    def stop(removeFile):
+        pass
 
 d = Disk(23, '1000')
-print(d.num_blocks, type(d.num_blocks))
-print(d.block_size, type(d.block_size))
-print(d.atributoDinamico)
+print(d._numBlocks, type(d._numBlocks))
+print(d._blockSize, type(d._blockSize))
