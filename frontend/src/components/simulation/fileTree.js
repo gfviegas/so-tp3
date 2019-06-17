@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Collapse from '@material-ui/core/Collapse'
 import ListSubheader from '@material-ui/core/ListSubheader'
+import Button from '@material-ui/core/Button'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import List from '@material-ui/core/List'
@@ -21,6 +22,12 @@ const styles = theme => ({
   },
   paddedList: {
     paddingLeft: theme.spacing(4)
+  },
+  btnSection: {
+    marginTop: theme.spacing(2)
+  },
+  btn: {
+    marginLeft: 4
   }
 })
 
@@ -46,6 +53,8 @@ class FileTree extends React.Component {
         break
       case 2:
         onItemDelete(activeItem)
+        break
+      default:
         break
     }
 
@@ -74,7 +83,7 @@ class FileTree extends React.Component {
   }
 
   render () {
-    const { classes, inode } = this.props
+    const { classes, inode, handleNewFile, handleNewFolder } = this.props
     const { anchorEl } = this.state
     const { wd } = inode
 
@@ -124,6 +133,11 @@ class FileTree extends React.Component {
             </MenuItem>
           ))}
         </Menu>
+
+        <div className={classes.btnSection}>
+          <Button variant='contained' size='medium' color='secondary' onClick={handleNewFolder}> Novo Diretório </Button>
+          <Button variant='outlined' size='medium' color='secondary' className={classes.btn} onClick={handleNewFile}> Novo Arquivo </Button>
+        </div>
       </section>
     )
   }
@@ -133,7 +147,9 @@ FileTree.propTypes = {
   inode: PropTypes.object.isRequired,
   onItemOpen: PropTypes.func.isRequired,
   onItemDelete: PropTypes.func.isRequired,
-  onItemRename: PropTypes.func.isRequired
+  onItemRename: PropTypes.func.isRequired,
+  handleNewFile: PropTypes.func.isRequired,
+  handleNewFolder: PropTypes.func.isRequired
 }
 
 export default withStyles(styles, { withTheme: true })(FileTree)
