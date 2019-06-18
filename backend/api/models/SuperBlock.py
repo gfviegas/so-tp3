@@ -8,11 +8,7 @@ class SuperBlock(Block):
         self._firstFreeBlock = self._inodeSize + 1
 
     def formatBlock(self):
-        line = operator.concat(str(self._totalSize), "|")
-        line = operator.concat(line, str(self._inodeSize))
-        line = operator.concat(line, "|")
-        line = operator.concat(line, str(self._firstFreeBlock))
-        return line
+        return str(self._totalSize) + "|" + str(self._inodeSize) + "|" + str(self._firstFreeBlock)
 
     def readBlock(self, block):
         pass

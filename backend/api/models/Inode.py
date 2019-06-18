@@ -26,14 +26,16 @@ class Inode:
     def getInodeId(x, y, iNumber):
         return ((x - 1) * iNumber) + y
 
+    def appendInode(content, name):
+        content = content.split("|")
+        content[0] = content[0] + "/" + name
+        content = "|".join(content)
+        return content
+
     def formatInode(self):
-        line = operator.concat(str(self._flag), ";")
-        line = operator.concat(line, str(self._fileSize))
-        line = operator.concat(line, ";")
-        line = operator.concat(line, "[")
+        line = str(self._flag) + ";" + str(self._fileSize) + ";["
         for i in range(len(self._pointers)):
-            line = operator.concat(line, str(self._pointers[i]))
+            line = line + str(self._pointers[i])
             if (i != len(self._pointers) - 1):
-                line = operator.concat(line, ",")
-        line = operator.concat(line, "]")
-        return line
+                line = line + ","
+        return line + "]"

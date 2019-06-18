@@ -12,9 +12,9 @@ class InodeBlock(Block):
     def getInodeBlock(self):
         line = ""
         for i in range(len(self._nodes)):
-            line = operator.concat(line, self._nodes[i].formatInode())
+            line = line + self._nodes[i].formatInode()
             if(i != len(self._nodes) - 1):
-                line = operator.concat(line, "|")
+                line = line + "|"
         return line
 
     def getFirstFreeInode(line, block):

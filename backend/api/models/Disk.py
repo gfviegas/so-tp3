@@ -12,7 +12,7 @@ class Disk(object):
 
 
     def createDisk(self):
-        file = open(operator.concat("../disks/", self._id), "w")
+        file = open("../disks/" + self._id, "w")
 
         for i in range(self._numBlocks):
             for j in range(self._blockSize):
@@ -37,7 +37,7 @@ class Disk(object):
         self.createDisk()
 
     def read(self, blocknumber):
-        with open(operator.concat("../disks/", self._id), "r") as file:
+        with open("../disks/" + self._id, "r") as file:
             lines = file.readlines()
             lineIndex = 0
             for line in lines:
@@ -47,9 +47,9 @@ class Disk(object):
         return -1
 
     def write(self, blocknumber, block):
-        with open(operator.concat("../disks/", self._id), "r") as file:
+        with open("../disks/" + self._id, "r") as file:
             lines = file.readlines()
-            file = open(operator.concat("../disks/", self._id), "w")
+            file = open("../disks/" + self._id, "w")
 
             lineIndex = 0
             for line in lines:
@@ -66,7 +66,7 @@ class Disk(object):
 
     def getFirstFreeBlock(self):
         for i in range(self._numBlocks):
-            with open(operator.concat("../disks/", self._id), "r") as file:
+            with open("../disks/" + self._id, "r") as file:
                 lines = file.readlines()
                 lineIndex = 0
                 for line in lines:
