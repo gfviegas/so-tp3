@@ -16,7 +16,7 @@ class InstructionsTable extends React.Component {
     const rows = [
       createData('Ver Diretório de Trabalho', 'pwd', 'pwd'),
       createData('Mudar Diretório de Trabalho', 'cd DIRETORIO', 'cd /home/arquivos'),
-      createData('Criar Arquivo', 'touch FILENAME', 'touch arquivo.txt'),
+      createData('Criar Arquivo', 'create FILENAME "DATA"', 'create arquivo.txt "meu arquivo é demais né?"'),
       createData('Remover Arquivo', 'rm FILENAME', 'rm arquivo.txt'),
       createData('Criar Diretório', 'mkdir DIRECTORY', 'mkdir novaPasta'),
       createData('Remover Diretório', 'rmdir DIRECTORY', 'rmdir novaPasta')
