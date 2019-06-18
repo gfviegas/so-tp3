@@ -14,6 +14,7 @@ import FileTree from './fileTree'
 import RenameDialog from './renameDialog'
 import CreateDialog from './createDialog'
 import background from '../../assets/images/geometric.jpg'
+import { toKB, toB } from '../../utils/sizes'
 
 const styles = theme => ({
   '@global': {
@@ -91,7 +92,7 @@ class SimulationHome extends React.Component {
       size: 48
     }
 
-    this.state = { inode, currentFile, renameDialogOpen: false, renameDialogCurrentName: null, createDialogOpen: false }
+    this.state = { simulation: null, inode, currentFile, renameDialogOpen: false, renameDialogCurrentName: null, createDialogOpen: false }
     this.simulationId = props.match.params.simulationId
   }
 
@@ -103,14 +104,14 @@ class SimulationHome extends React.Component {
     this.fetchSimulationInfo(nextProps)
   }
 
-  fetchSimulationInfo = async (props) => {
-    // const { match } = props
-    // try {
-    //   const response = await axios.get(`/api/simulations/${this.simulationId}`)
-    //   this.setState({ response })
-    // } catch (e) {
-    //   console.error(e)
-    // }
+  fetchSimulationInfo = async () => {
+    try {
+      const { data } = await axios.get(`/api/simulations/${this.simulationId}`)
+      this.setState({ simulation: data })
+    } catch (e) {
+      // TODO: Go home!
+      console.error(e)
+    }
   }
 
   handleItemOpen = async (item) => {
@@ -186,9 +187,10 @@ class SimulationHome extends React.Component {
   }
 
   render () {
-    const { inode, currentFile, renameDialogOpen, renameDialogCurrentName, createDialogOpen, createDialogType } = this.state
+    const { simulation, inode, currentFile, renameDialogOpen, renameDialogCurrentName, createDialogOpen, createDialogType } = this.state
     const { classes, match } = this.props
 
+    if (!simulation) return <div />
     return (
       <section>
         <CssBaseline />
@@ -198,15 +200,15 @@ class SimulationHome extends React.Component {
             <Grid item md={3}>
               <Paper elevation={24} className={classes.paper}>
                 <Typography variant='h5'> Tamanho de Disco </Typography>
-                <Typography className={classes.statDescription} variant='body2'> 120 MB </Typography>
+                <Typography className={classes.statDescription} variant='body2'> {toKB(simulation.diskSize)} KB </Typography>
               </Paper>
               <Paper elevation={24} className={classes.paper}>
                 <Typography variant='h5'> Tamanho de Bloco </Typography>
-                <Typography className={classes.statDescription} variant='body2'> 2 KB </Typography>
+                <Typography className={classes.statDescription} variant='body2'> {toB(simulation.blockSize)} Bytes </Typography>
               </Paper>
               <Paper elevation={24} className={classes.paper}>
                 <Typography variant='h5'> Quantidade de Blocos </Typography>
-                <Typography className={classes.statDescription} variant='body2'> 600 blocos </Typography>
+                <Typography className={classes.statDescription} variant='body2'> {simulation.numBlocks} blocos </Typography>
               </Paper>
             </Grid>
 

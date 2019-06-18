@@ -5,6 +5,7 @@ setup(
     packages=['api'],
     include_package_data=True,
     install_requires=[
+        'numpy',
         'flask',
         'flask-restful',
         'redis',

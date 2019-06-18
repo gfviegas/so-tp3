@@ -7,7 +7,7 @@ class Disk(object):
     NUM_BLOCKS_MAX = 100
 
     # Valores minimos e máximos, em bytes, do tamanho do bloco
-    BLOCK_SIZE_MIN = 512 # 500 bytes
+    BLOCK_SIZE_MIN = 100 # 500 bytes
     BLOCK_SIZE_MAX = 4096 # 4 KB
 
 
@@ -36,8 +36,15 @@ class Disk(object):
 
         self.createDisk()
 
-    def read(blocknumber, block):
-        pass
+    def read(self, blocknumber):
+        with open(operator.concat("../disks/", self._id), "r") as file:
+            lines = file.readlines()
+            lineIndex = 0
+            for line in lines:
+                if(lineIndex == blocknumber):
+                    return line
+                lineIndex += 1
+        return -1
 
     def write(self, blocknumber, block):
         with open(operator.concat("../disks/", self._id), "r") as file:
@@ -56,6 +63,17 @@ class Disk(object):
                 lineIndex += 1
 
         file.close()
+
+    def getFirstFreeBlock(self):
+        for i in range(self._numBlocks):
+            with open(operator.concat("../disks/", self._id), "r") as file:
+                lines = file.readlines()
+                lineIndex = 0
+                for line in lines:
+                    if(line[0] == 'X'):
+                        return lineIndex
+                    lineIndex += 1
+        return -1
 
     def stop(removeFile):
         pass

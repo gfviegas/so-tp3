@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// import axios from 'axios'
+import axios from 'axios'
 
 import { withStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -77,37 +77,43 @@ class SimulationExpress extends React.Component {
     const outputs = emulatorState.getOutputs()
 
     this.state = { loading: false, emulatorState, outputs }
+    this.simulationId = props.match.params.simulationId
   }
 
   componentDidMount () {
-    window.setTimeout(() => {
-      for (var i = 0; i < 30; i++) {
-        this.addRecord('****** Terminal Output ******' + i)
-        this.addRecord('****** Terminal Output ******' + i)
-      }
-    }, 2000)
+    this.addRecord('\t ****** Terminal Output ******')
   }
 
-  addRecord = (output) => {
+  addRecord = async (output) => {
     const { emulatorState } = this.state
     let outputs = emulatorState.getOutputs()
 
     outputs = Outputs.addRecord(outputs, OutputFactory.makeTextOutput(output))
-    this.setState({ outputs, emulatorState: emulatorState.setOutputs(outputs) })
+    return this.setState({ outputs, emulatorState: emulatorState.setOutputs(outputs) })
   }
 
   openFileInput = () => {
     this.fileInput.current.click()
   }
 
-  fileInputChange = (e) => {
+  fileInputChange = async (e) => {
     const { files } = e.target
+    const fd = new window.FormData()
+    fd.append('file', files[0])
 
     this.setState({ loading: true })
-    setTimeout(() => {
-      this.addRecord(`\n \t Carregado o arquivo ${files[0].name}.`)
+    await this.addRecord(`\n \t Carregado o arquivo ${files[0].name}.`)
+    await this.addRecord(`\n \t Processando....`)
+
+    try {
+      const { output } = (await axios.post(`/api/simulations/${this.simulationId}/express`, fd)).data
+      await this.addRecord(output.join('\n'))
+    } catch (e) {
+      await this.addRecord(`\n \t Erro: ${e}`)
+      console.error(e)
+    } finally {
       this.setState({ loading: false })
-    }, 4000)
+    }
   }
 
   render () {
