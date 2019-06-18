@@ -16,3 +16,11 @@ class InodeBlock(Block):
             if(i != len(self._nodes) - 1):
                 line = operator.concat(line, "|")
         return line
+
+    def getFirstFreeInode(line, block):
+        inodes = block.split("|")
+        for i in range(len(inodes)):
+            print(inodes[i])
+            if(inodes[i][0] == '0'):
+                return Inode.getInodeId(line, i, len(inodes))
+        return -1
