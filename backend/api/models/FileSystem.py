@@ -11,14 +11,14 @@ class FileSystem:
         self._root = Inode()
         id = self._getFirstFreeInode()
         pointers = self._fillBlocks(content)
-        self._root.set(id, name, content, pointers)
-        self.write(self._root, name, content)
+        self._root.set(id, content, pointers, 1)
+        self.write(self._root)
 
     def __init__(self, numBlocks, blockSize, inodeSize):
         self._disk = Disk(numBlocks, blockSize)
         self.formatDisk(numBlocks, inodeSize)
 
-        self._createRoot("/", "/|")
+        self._createRoot("/", "/0|")
         self._current = self._root
 
     def _fillBlocks(self, content):
@@ -41,14 +41,27 @@ class FileSystem:
     def create(self, name, content):
         inode = Inode()
         id = self._getFirstFreeInode()
-        content = Inode.appendInode(content, name)
+        content = Inode.appendInode(content, self._current._id)
+
+        #para diretórios, adiciona os inodes da pasta atual e raíz (cd .. e cd)
+        if(content.split("|")[1] == ''):
+            if(self._root._id != self._current._id):
+                content = Inode.appendInode(content, self._root._id)
+
+        content = Inode.appendInode(content, id)
         pointers = self._fillBlocks(content)
-        inode.set(id, name, content, pointers)
-        self.write(inode, name, content)
+        inode.set(id, content, pointers, 1)
+        self.write(inode)
 
         inodeContent = self.seek(self._current)
-        inodeContent = Inode.appendInode(inodeContent, "/")
-        self.write(self._current, "/", inodeContent)
+        inodeContent = Inode.appendInode(inodeContent, id)
+        inodeContent = inodeContent.replace("\n", "")
+
+        for inodeBlock in self._current._pointers:
+            self._disk.write(inodeBlock, inodeContent)
+
+        self.write(self._current)
+        return inode
 
     def _writeInode(self, inode):
         blockSize = self._disk._blockSize
@@ -62,7 +75,7 @@ class FileSystem:
 
         self._disk.write(currentInodeBlock, block)
 
-    def write(self, inode, name, content):
+    def write(self, inode):
         self._writeInode(inode)
         self._disk.write(0, self._superBlock.formatBlock())
 
@@ -84,10 +97,10 @@ class FileSystem:
         return -1
 
     def getCurrent(self):
-        return this._current
+        return self._current
 
     def setCurrent(self, inode):
-        this._current = inode
+        self._current = inode
 
     def shutdown():
         pass
@@ -95,8 +108,22 @@ class FileSystem:
     def close(fd):
         pass
 
-    def delete(inumber):
-        pass
+    def delete(self, inode):
+        inodeContent = self.seek(self._current)
+        inodeContent = Inode.removeInode(inodeContent, inode._id)
+        inodeContent = inodeContent.replace("\n", "")
+
+        for inodeBlock in self._current._pointers:
+            self._disk.write(inodeBlock, inodeContent)
+
+        free = Inode()
+        free.set(inode._id, "", [0,0,0,0], 0)
+        for inodeBlock in inode._pointers:
+            self._disk.write(inodeBlock, "")
+        self.write(free)
+        self._superBlock.setFirstFreeBlock(self._disk.getFirstFreeBlock())
+        self._disk.write(0, self._superBlock.formatBlock())
+
 
 #fs = FileSystem(20, 100, 10)
 #fs.create("arquivo.txt", "|esse vai ser o arquivo mais foda que vc já viu na vida!!! Porém, ele vai ocupar dois blocos, mas pra isso tem que escrever mais")

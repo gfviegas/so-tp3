@@ -16,19 +16,25 @@ class Inode:
         for i in range(4):
             self._pointers.insert(i, 0)
 
-    def set(self, id, name, content, pointers):
+    def set(self, id, content, pointers, flag):
         self._id = id
         self._fileSize = len(content)
         self._updatedAt = date.now()
-        self._flag = 1
+        self._flag = flag
         self._pointers = pointers
 
     def getInodeId(x, y, iNumber):
         return ((x - 1) * iNumber) + y
 
-    def appendInode(content, name):
+    def appendInode(content, id):
         content = content.split("|")
-        content[0] = content[0] + "/" + name
+        content[0] = content[0] + "/" + str(id)
+        content = "|".join(content)
+        return content
+
+    def removeInode(content, id):
+        content = content.split("|")
+        content[0] = content[0].replace("/"+str(id), "")
         content = "|".join(content)
         return content
 

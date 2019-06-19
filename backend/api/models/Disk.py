@@ -54,9 +54,9 @@ class Disk(object):
             lineIndex = 0
             for line in lines:
                 if lineIndex == blocknumber:
-                    file.write(block)
                     for i in range(len(block), self._blockSize):
-                        file.write("X")
+                        block += "X"
+                    file.write(block)
                     file.write("\n")
                 else:
                     file.write(line)
