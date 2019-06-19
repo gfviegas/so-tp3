@@ -2,6 +2,9 @@ from flask_restful import Resource, reqparse
 
 import uuid
 from api.settings.redis import rm
+from api.models.manager import Manager
+
+simulations = {}
 
 class SimulationsList(Resource):
     def get(self):
@@ -17,7 +20,10 @@ class SimulationsList(Resource):
         id = str(uuid.uuid4())[:8]
 
         # TODO: Criar simulacao...
+        simManager = Manager(args['numBlocks'], args['blockSize'], id)
+        simulations[id] = simManager
 
+        # Adicionando ID no cache
         s = rm.redis.sadd('simulations', id)
         return {'status': s, 'id': id}, 201
 
@@ -34,10 +40,11 @@ class Simulation(Resource):
             return {'error': 'simulation_not_found'}, 404
 
         # Simulation(id)...
-        numBlocks = 100
-        blockSize = 4096
+        global simulations
+        simManager = simulations[simulationId]
+
         return {
-            'numBlocks': numBlocks,
-            'blockSize': blockSize,
-            'diskSize': blockSize * numBlocks
+            'numBlocks': simManager.numBlocks,
+            'blockSize': simManager.blockSize,
+            'diskSize': simManager.blockSize * simManager.numBlocks
         }, 200

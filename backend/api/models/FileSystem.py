@@ -1,10 +1,8 @@
-import operator
-
-from Disk import Disk
-from Inode import Inode
-from InodeBlock import InodeBlock
-from Item import Item
-from SuperBlock import SuperBlock
+from api.models.disk import Disk
+from api.models.inode import Inode
+from api.models.inodeBlock import InodeBlock
+from api.models.item import Item
+from api.models.superBlock import SuperBlock
 
 class FileSystem:
     def _createRoot(self, name, content):
@@ -14,8 +12,8 @@ class FileSystem:
         self._root.set(id, content, pointers, 1)
         self.write(self._root)
 
-    def __init__(self, numBlocks, blockSize, inodeSize):
-        self._disk = Disk(numBlocks, blockSize)
+    def __init__(self, numBlocks, blockSize, inodeSize, simulationId):
+        self._disk = Disk(numBlocks, blockSize, simulationId)
         self.formatDisk(numBlocks, inodeSize)
 
         self._createRoot("/", "/0|")
@@ -26,7 +24,7 @@ class FileSystem:
         blocks = []
         for i in range(necessaryBlocks):
             free = self._superBlock.getFirstFreeBlock()
-            self._disk.write(free, content[i*self._disk._blockSize:(i+1)*self._disk._blockSize])
+            self._disk.write(free, content[i * self._disk._blockSize:(i+1)*self._disk._blockSize])
             self._superBlock.setFirstFreeBlock(self._disk.getFirstFreeBlock())
             blocks.insert(i, free)
 

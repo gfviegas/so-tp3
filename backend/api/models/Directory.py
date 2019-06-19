@@ -1,4 +1,4 @@
-from Item import Item
+from api.models.item import Item
 
 class Directory(Item):
     _content #listItem()

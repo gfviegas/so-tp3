@@ -1,5 +1,4 @@
-import operator
-from Block import Block
+from api.models.block import Block
 
 class SuperBlock(Block):
     def __init__(self, totalSize, inodeSize):

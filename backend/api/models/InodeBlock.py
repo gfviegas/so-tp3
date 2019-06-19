@@ -1,7 +1,5 @@
-import operator
-
-from Block import Block
-from Inode import Inode
+from api.models.block import Block
+from api.models.inode import Inode
 
 class InodeBlock(Block):
     def __init__(self, blockSize):

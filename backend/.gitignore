@@ -105,3 +105,4 @@ venv.bak/
 
 # disks
 api/disks
+!api/disks/.gitkeep

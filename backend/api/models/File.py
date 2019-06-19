@@ -1,4 +1,4 @@
-from Item import Item
+from api.models.item import Item
 
 class File(Item):
     _content #string

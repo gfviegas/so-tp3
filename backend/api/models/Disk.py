@@ -1,5 +1,4 @@
-import uuid
-import operator
+from os import path
 
 class Disk(object):
     # Valores minimos e máximos, em unidades, da quantidade de blocos
@@ -10,19 +9,11 @@ class Disk(object):
     BLOCK_SIZE_MIN = 100 # 500 bytes
     BLOCK_SIZE_MAX = 4096 # 4 KB
 
+    def __init__(self, numBlocks=100, blockSize=1024, simulationId=None):
+        if (simulationId is None):
+            raise Exception('SimulationId can\'t be none')
 
-    def createDisk(self):
-        file = open("../disks/" + self._id, "w")
-
-        for i in range(self._numBlocks):
-            for j in range(self._blockSize):
-                file.write("X")
-            file.write("\n")
-
-        file.close()
-
-    def __init__(self, numBlocks=100, blockSize=1024):
-        self._id = str(uuid.uuid4())[:8]
+        self._id = simulationId
 
         self._numBlocks = int(numBlocks)
         if (self._numBlocks not in range(self.NUM_BLOCKS_MIN,
@@ -36,8 +27,23 @@ class Disk(object):
 
         self.createDisk()
 
+    def getFilePath(self):
+        dirname = path.dirname(__file__)
+        filePath = path.join(dirname, '../disks/{}'.format(self._id))
+        return path.abspath(filePath)
+
+    def createDisk(self):
+        file = open(self.getFilePath(), 'w')
+
+        for i in range(self._numBlocks):
+            for j in range(self._blockSize):
+                file.write('X')
+            file.write('\n')
+
+        file.close()
+
     def read(self, blocknumber):
-        with open("../disks/" + self._id, "r") as file:
+        with open(self.getFilePath(), 'r') as file:
             lines = file.readlines()
             lineIndex = 0
             for line in lines:
@@ -47,17 +53,17 @@ class Disk(object):
         return -1
 
     def write(self, blocknumber, block):
-        with open("../disks/" + self._id, "r") as file:
+        with open(self.getFilePath(), 'r') as file:
             lines = file.readlines()
-            file = open("../disks/" + self._id, "w")
+            file = open(self.getFilePath(), 'w')
 
             lineIndex = 0
             for line in lines:
                 if lineIndex == blocknumber:
                     for i in range(len(block), self._blockSize):
-                        block += "X"
+                        block += 'X'
                     file.write(block)
-                    file.write("\n")
+                    file.write('\n')
                 else:
                     file.write(line)
                 lineIndex += 1
@@ -66,7 +72,7 @@ class Disk(object):
 
     def getFirstFreeBlock(self):
         for i in range(self._numBlocks):
-            with open("../disks/" + self._id, "r") as file:
+            with open(self.getFilePath(), 'r') as file:
                 lines = file.readlines()
                 lineIndex = 0
                 for line in lines:

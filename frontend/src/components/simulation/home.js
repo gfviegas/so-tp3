@@ -14,7 +14,7 @@ import FileTree from './fileTree'
 import RenameDialog from './renameDialog'
 import CreateDialog from './createDialog'
 import background from '../../assets/images/geometric.jpg'
-import { toKB, toB } from '../../utils/sizes'
+import { toKB } from '../../utils/sizes'
 
 const styles = theme => ({
   '@global': {
@@ -204,7 +204,7 @@ class SimulationHome extends React.Component {
               </Paper>
               <Paper elevation={24} className={classes.paper}>
                 <Typography variant='h5'> Tamanho de Bloco </Typography>
-                <Typography className={classes.statDescription} variant='body2'> {toB(simulation.blockSize)} Bytes </Typography>
+                <Typography className={classes.statDescription} variant='body2'> {simulation.blockSize} Bytes </Typography>
               </Paper>
               <Paper elevation={24} className={classes.paper}>
                 <Typography variant='h5'> Quantidade de Blocos </Typography>
