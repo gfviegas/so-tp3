@@ -25,7 +25,8 @@ class Manager:
         d = self._fileSystem.listDirectory()
         d.sort(key=lambda i: i['name'])
         d.sort(key=lambda i: i['type'], reverse=True)
-        return d
+        payload = {'wd': self.returnCurrent(), 'items': d}
+        return payload
 
     def openFile(self, name):
         inode = self._fileSystem.getInode(name)

@@ -128,4 +128,9 @@ class SimulationDirectory(Resource):
         args = parser.parse_args(strict=True)
         simManager = get_simulation(simulationId)
 
-        return simManager.openDirectory(args['directory']), 200
+        simManager.openDirectory(args['directory'])
+
+        # Atualiza instancia da simulacao no cache pois foi alterado o WD
+        push_simulation(simulationId, simManager)
+
+        return simManager.listDirectory(), 200
