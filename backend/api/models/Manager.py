@@ -17,6 +17,8 @@ class Manager:
 
     def openDirectory(self, name):
         inode = self._fileSystem.getInode(name)
+        if(inode == -1):
+            raise Exception("Diretório não encontrado")
         self._fileSystem.setCurrent(inode, name)
 
     def listDirectory(self):
@@ -24,6 +26,8 @@ class Manager:
 
     def openFile(self, name):
         inode = self._fileSystem.getInode(name)
+        if(inode == -1):
+            raise Exception("Arquivo não encontrado")
         file = self._fileSystem.seek(inode)
         file = file.split("|")[1].replace("\n", "")
         return file
@@ -33,4 +37,6 @@ class Manager:
 
     def remove(self, name):
         inode = self._fileSystem.getInode(name)
+        if(inode == -1):
+            raise Exception(name + " não pôde ser removido")
         return self._fileSystem.delete(inode, name)

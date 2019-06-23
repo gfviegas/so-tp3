@@ -1,6 +1,4 @@
-from api.models.block import Block
-
-class SuperBlock(Block):
+class SuperBlock:
     def __init__(self, totalSize, inodeSize):
         self._totalSize = totalSize
         self._inodeSize = inodeSize

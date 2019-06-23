@@ -1,5 +1,3 @@
-from api.models.block import Block
-
-class IndirectBlock(Block):
+class IndirectBlock:
     def __init__(self):
         pass

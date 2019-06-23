@@ -27,3 +27,6 @@ if __name__ == '__main__':
     manager.openDirectory("pasta dentro de pasta")
     manager.createFile("tpdeso.txt", "esse vai ser o tpdeso mais foda que vc já viu na vida!!!")
     print(manager.listDirectory())
+    #não consegue abrir arquivo que não existe
+    #manager.openDirectory("root")
+    print(manager.openFile("arquivo.txt"))

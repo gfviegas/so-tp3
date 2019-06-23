@@ -1,7 +1,6 @@
 from api.models.disk import Disk
 from api.models.inode import Inode
 from api.models.inodeBlock import InodeBlock
-from api.models.item import Item
 from api.models.superBlock import SuperBlock
 
 class FileSystem:
@@ -68,7 +67,7 @@ class FileSystem:
         currentInode = inode._id % int(blockSize / Inode.INODESIZE)
 
         block = self.read(currentInodeBlock)
-        splitedBlock = block.replace("\n", "").split("|")
+        splitedBlock = block.replace("X", "").replace("\n", "").split("|")
         splitedBlock[currentInode] = inode.formatInode()
         block = "|".join(splitedBlock)
 
@@ -110,7 +109,7 @@ class FileSystem:
                 currentInode = inodeId % int(blockSize / Inode.INODESIZE)
 
                 block = self.read(inodeBlock)
-                splitedBlock = block.replace("\n", "").split("|")
+                splitedBlock = block.replace("X", "").replace("\n", "").split("|")
                 return Inode.read(splitedBlock[currentInode], inodeId)
         return -1
 

@@ -1,7 +1,6 @@
-from api.models.block import Block
 from api.models.inode import Inode
 
-class InodeBlock(Block):
+class InodeBlock:
     def __init__(self, blockSize):
         self._nodes = []
         for i in range(int(blockSize / Inode.INODESIZE)):
