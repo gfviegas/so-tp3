@@ -126,7 +126,10 @@ class SimulationHome extends React.Component {
       })
 
       try {
-        const currentFile = await axios.get(`/api/simulations/${this.simulationId}/file`, { params: { file: item.name } })
+        const { data } = await axios.get(`/api/simulations/${this.simulationId}/file`, { params: { file: item.name } })
+        const currentFile = data
+        currentFile.createdAt = new Date(currentFile.createdAt).toLocaleString('pt-BR')
+        currentFile.updatedAt = new Date(currentFile.updatedAt).toLocaleString('pt-BR')
         return this.setState({ inode, currentFile })
       } catch (e) {
         console.error(e)

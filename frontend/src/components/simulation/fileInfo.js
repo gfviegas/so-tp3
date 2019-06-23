@@ -11,10 +11,17 @@ const styles = theme => ({
   },
   fileTitle: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     width: '100%',
     alignItems: 'flex-end'
+  },
+  fileTitleRow: {
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    flexDirection: 'row'
   },
   divider: {
     width: '100%',
@@ -30,8 +37,14 @@ class FileInfo extends React.Component {
       return (
         <section className={classes.root} >
           <div className={classes.fileTitle}>
-            <Typography variant='h4'> {file.name} </Typography>
-            <Typography variant='overline'> <strong> {file.size} </strong> bytes. </Typography>
+            <div className={classes.fileTitleRow} >
+              <Typography variant='h4'> {file.name} </Typography>
+              <Typography variant='overline'> <strong> {file.size} </strong> bytes. </Typography>
+            </div>
+            <div className={classes.fileTitleRow} >
+              <Typography variant='overline'> <strong> Criado em </strong> {file.createdAt}. </Typography>
+              <Typography variant='overline'> <strong> Modificado em </strong> {file.updatedAt}. </Typography>
+            </div>
           </div>
           <Divider variant='middle' className={classes.divider} />
           <Typography variant='body2'> {file.content} </Typography>

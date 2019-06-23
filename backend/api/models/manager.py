@@ -40,9 +40,9 @@ class Manager:
         return {
             'name': name,
             'content': file,
-            'fileSize': inode._fileSize,
-            'createdAt': inode._createdAt,
-            'updatedAt': inode._updatedAt
+            'size': inode._fileSize,
+            'createdAt': inode._createdAt.isoformat(),
+            'updatedAt': inode._updatedAt.isoformat()
         }
 
     def rename(self, oldName, newName):

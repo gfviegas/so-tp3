@@ -2,6 +2,9 @@
 from dotenv import load_dotenv
 load_dotenv()
 
+# Configurando timezone
+import os, time
+
 # Importando FW
 from flask import Flask, Blueprint
 from flask_restful import Resource, Api
@@ -15,6 +18,10 @@ from api.resources.setup import SetupList
 from api.resources.simulations import (SimulationsList, Simulation,
                                        SimulationDirectory, SimulationFile)
 from api.resources.express import SimulationExpress
+
+# Configurando timezone
+os.environ['TZ'] = 'America/Sao_Paulo'
+time.tzset()
 
 # Boot Flask App e API
 app = Flask(__name__)
