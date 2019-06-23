@@ -18,6 +18,7 @@ class FileSystem:
         self.formatDisk(numBlocks, inodeSize)
 
         self._createRoot("root", "|")
+        self._path = [{ 'name': 'root', 'inode': self._root }]
         self._current = self._root
         self._currentName = self._rootName
 
@@ -45,6 +46,7 @@ class FileSystem:
         #para diretórios, adiciona os inodes da pasta atual e raíz (cd .. e cd)
         if(content.split("|")[1] == ''):
             content = Inode.appendInode(content, self._root._id, self._rootName)
+            content = Inode.appendInode(content, self._current._id, "..")
 
         content = Inode.appendInode(content, id, name)
         pointers = self._fillBlocks(content)
@@ -120,19 +122,24 @@ class FileSystem:
         for file in files:
             if(len(file) > 0):
                 file = file.split(";")[1]
-                if(len(file.split(".")) > 1):
+                if(len(file.split(".")) > 1 and file != ".."):
                     ls.append({'name': file, 'type': 'file'})
                 else:
                     ls.append({'name': file, 'type': 'folder'})
         ls.pop(0)
-        if (self._current._id != self._root._id):
-            ls.pop(0)
         return ls
 
-    def getCurrent(self):
-        return self._current
+    def previousDirectory(self):
+        self._path.pop()
+        self._current = self._path[-1]['inode']
+        self._currentName = self._path[-1]['name']
 
     def setCurrent(self, inode, name):
+        if(name == "root"):
+            self._path = [{ 'name': 'root', 'inode': self._root }]
+        else:
+            self._path.append({ 'name': name, 'inode': inode })
+            
         self._current = inode
         self._currentName = name
 

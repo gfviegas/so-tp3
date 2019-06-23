@@ -16,10 +16,13 @@ class Manager:
         return self._fileSystem.create(name, '|')
 
     def openDirectory(self, name):
-        inode = self._fileSystem.getInode(name)
-        if(inode == -1):
-            raise Exception('Diretório não encontrado')
-        self._fileSystem.setCurrent(inode, name)
+        if(name == ".."):
+            self._fileSystem.previousDirectory()
+        else:
+            inode = self._fileSystem.getInode(name)
+            if(inode == -1):
+                raise Exception('Diretório não encontrado')
+            self._fileSystem.setCurrent(inode, name)
 
     def listDirectory(self):
         d = self._fileSystem.listDirectory()
@@ -49,7 +52,10 @@ class Manager:
         return self._fileSystem.rename(oldName, newName)
 
     def returnCurrent(self):
-        return self._fileSystem._currentName
+        path = ""
+        for directory in self._fileSystem._path:
+            path += directory['name'] + "/"
+        return path
 
     def remove(self, name):
         inode = self._fileSystem.getInode(name)
