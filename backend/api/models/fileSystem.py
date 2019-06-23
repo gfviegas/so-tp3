@@ -120,7 +120,10 @@ class FileSystem:
         for file in files:
             if(len(file) > 0):
                 file = file.split(";")[1]
-                ls.append(file)
+                if(len(file.split(".")) > 1):
+                    ls.append("{ '"+file+"': 'file' }")
+                else:
+                    ls.append("{ '"+file+"': 'folder' }")
         ls.pop(0)
         if(self._current._id != self._root._id):
             ls.pop(0)
