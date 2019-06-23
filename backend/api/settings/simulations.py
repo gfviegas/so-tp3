@@ -13,6 +13,7 @@ def get_simulation(key):
         raise Exception('Simulation Instance does not exists')
 
     unpickledSim = pickle.loads(um.redis.get(key))
+    print(unpickledSim.returnCurrent(), flush=True)
 
     return unpickledSim
 

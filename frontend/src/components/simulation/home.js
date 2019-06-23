@@ -66,16 +66,9 @@ class SimulationHome extends React.Component {
     super(props)
 
     const inode = {
-      wd: 'root',
+      wd: 'root/',
       items: []
     }
-
-    // const currentFile = {
-    //   id: 9102109,
-    //   name: '2.txt',
-    //   content: '123456',
-    //   size: 48
-    // }
     const currentFile = null
 
     this.state = { simulation: null, inode, currentFile, renameDialogOpen: false, renameDialogCurrentName: null, createDialogOpen: false }
@@ -91,6 +84,10 @@ class SimulationHome extends React.Component {
     this.fetchSimulationInfo(nextProps)
   }
 
+  treatInodeList = (inodeList) => {
+    return inodeList.map(i => Object.assign(i, { open: false }))
+  }
+
   fetchSimulationInfo = async () => {
     try {
       const { data } = await axios.get(`/api/simulations/${this.simulationId}`)
@@ -104,9 +101,9 @@ class SimulationHome extends React.Component {
   fetchWDInfo = async () => {
     try {
       const { data } = await axios.get(`/api/simulations/${this.simulationId}/directory`)
-      const { inode } = this.state
-
-      inode.items = data.map(i => Object.assign(i, { open: false }))
+      let { inode } = this.state
+      inode = data
+      inode.items = this.treatInodeList(data.items)
       this.setState({ inode })
     } catch (e) {
       console.error(e)
@@ -139,9 +136,14 @@ class SimulationHome extends React.Component {
     }
 
     // Se for diretorio...
-    // TODO: Chamar api, carregar o inode
-    inode.wd += `${item.name}/`
-    this.setState({ inode })
+    try {
+      const { data } = await axios.put(`/api/simulations/${this.simulationId}/directory`, { directory: item.name })
+      inode.items = this.treatInodeList(data)
+      inode.wd += `${item.name}/`
+      return this.setState({ inode })
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   handleItemDelete = async (item) => {
