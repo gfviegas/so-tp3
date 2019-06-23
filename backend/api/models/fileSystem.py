@@ -136,8 +136,21 @@ class FileSystem:
         self._current = inode
         self._currentName = name
 
-    def shutdown():
-        pass
+    def _rewrite(self, inode, oldName, newName):
+        content = self.seek(inode)
+        content = content.replace("\n", "")
+        content = content.replace(oldName, newName)
+
+        necessaryBlocks = int(len(content) / self._disk._blockSize) + 1
+        i = 0
+        for inodeBlock in inode._pointers:
+            self._disk.write(inodeBlock, content[i * self._disk._blockSize:(i+1)*self._disk._blockSize])
+            i += 1
+
+    def rename(self, oldName, newName):
+        inode = self.getInode(oldName)
+        self._rewrite(inode, oldName, newName)
+        self._rewrite(self._current, oldName, newName)
 
     def delete(self, inode, name):
         inodeContent = self.seek(self._current)
