@@ -22,7 +22,10 @@ class Manager:
         self._fileSystem.setCurrent(inode, name)
 
     def listDirectory(self):
-        return self._fileSystem.listDirectory()
+        d = self._fileSystem.listDirectory()
+        d.sort(key=lambda i: i['name'])
+        d.sort(key=lambda i: i['type'], reverse=True)
+        return d
 
     def openFile(self, name):
         inode = self._fileSystem.getInode(name)
