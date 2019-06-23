@@ -28,9 +28,19 @@ class Manager:
         inode = self._fileSystem.getInode(name)
         if (inode == -1):
             raise Exception('Arquivo não encontrado')
+
         file = self._fileSystem.seek(inode)
-        file = file.split('|')[1].replace('\n', '')
-        return file
+        content = file.split('|')
+        name = content[0].split(";")[1]
+        file = content[1].replace('\n', '')
+
+        return {
+            'name': name,
+            'content': file,
+            'fileSize': inode._fileSize,
+            'createdAt': inode._createdAt,
+            'updatedAt': inode._updatedAt
+        }
 
     def rename(self, oldName, newName):
         return self._fileSystem.rename(oldName, newName)
