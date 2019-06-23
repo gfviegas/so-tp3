@@ -1,10 +1,12 @@
 from flask_restful import Resource, reqparse
 
 from werkzeug import FileStorage
-from api.settings.redis import rm
 from io import TextIOWrapper, BytesIO
 from random import randint
 from re import findall
+
+from api.settings.redis import rm
+from api.resources.simulations import simulations
 
 class SimulationExpress(Resource):
     def post(self, simulationId):
@@ -19,11 +21,14 @@ class SimulationExpress(Resource):
         stream = args['file'].stream
         bytesData = stream.read()
 
+        self.simManager = simulations[simulationId]
+
         f = TextIOWrapper(BytesIO(bytesData), 'utf-8')
         for line in f.readlines():
             command = line.rstrip()
             output.append('** Processando o comando: {}.'.format(command))
-            output.append(self.processCommand(command))
+            # output.append(self.processCommand(command))
+            output.append('.')
 
         return {'output': output}, 201
 
@@ -31,24 +36,23 @@ class SimulationExpress(Resource):
     def emptyFunc(self, args=list()):
         return 'Argumentos: {}'.format(', '.join(str(x) for x in args))
 
-    def getAssociatedCommands(self):
+    def getAssociatedCommands(self, args):
         return {
             'pwd': self.emptyFunc,
-            'create': self.emptyFunc,
-            'rm': self.emptyFunc,
+            'create': self.simManager.createFile(args[0], args[1]),
+            'rm': self.simManager.remove(args[0]),
             'ls': self.emptyFunc,
-            'mkdir': self.emptyFunc,
-            'rmdir': self.emptyFunc,
-            'cd': self.emptyFunc
+            'mkdir': self.simManager.createDirectory(args[0]),
+            'rmdir': self.simManager.remove(args[0]),
+            'cd': self.simManager.openDirectory(args[0])
         }
 
 
     def processCommand(self, command):
         commandSplitted = findall(r'(?:"[^"]*"|[^\s"])+', command)
-        # commandSplitted = command.split(' ')
         operation = commandSplitted[0]
         args = commandSplitted[1:]
 
-        commands = self.getAssociatedCommands()
+        output = self.getAssociatedCommands(args)[operation]
 
-        return commands[operation](args)
+        return 'Comando {} executado. \n Saída: {}'.format(operation, output)
