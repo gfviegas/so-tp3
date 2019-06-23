@@ -7,7 +7,9 @@ from api.models.superBlock import SuperBlock
 class FileSystem:
     def _createRoot(self, name, content):
         self._root = Inode()
+        self._rootName = name
         id = self._getFirstFreeInode()
+        content = Inode.appendInode(content, self._root._id, name)
         pointers = self._fillBlocks(content)
         self._root.set(id, content, pointers, 1)
         self.write(self._root)
@@ -16,8 +18,9 @@ class FileSystem:
         self._disk = Disk(numBlocks, blockSize, simulationId)
         self.formatDisk(numBlocks, inodeSize)
 
-        self._createRoot("/", "/0|")
+        self._createRoot("root", "|")
         self._current = self._root
+        self._currentName = self._rootName
 
     def _fillBlocks(self, content):
         necessaryBlocks = int(len(content) / self._disk._blockSize) + 1
@@ -39,20 +42,18 @@ class FileSystem:
     def create(self, name, content):
         inode = Inode()
         id = self._getFirstFreeInode()
-        content = Inode.appendInode(content, self._current._id)
 
         #para diretórios, adiciona os inodes da pasta atual e raíz (cd .. e cd)
         if(content.split("|")[1] == ''):
-            if(self._root._id != self._current._id):
-                content = Inode.appendInode(content, self._root._id)
+            content = Inode.appendInode(content, self._root._id, self._rootName)
 
-        content = Inode.appendInode(content, id)
+        content = Inode.appendInode(content, id, name)
         pointers = self._fillBlocks(content)
         inode.set(id, content, pointers, 1)
         self.write(inode)
 
         inodeContent = self.seek(self._current)
-        inodeContent = Inode.appendInode(inodeContent, id)
+        inodeContent = Inode.appendInode(inodeContent, id, name)
         inodeContent = inodeContent.replace("\n", "")
 
         for inodeBlock in self._current._pointers:
@@ -94,21 +95,51 @@ class FileSystem:
                 return id
         return -1
 
+    def getInode(self, name):
+        content = ""
+        for dataBlock in self._current._pointers:
+            content = content + self.read(dataBlock).replace("X", "")
+
+        inodes = content.split("|")[0]
+        folders = inodes.split("/")
+        for folder in folders:
+            if(name in folder):
+                inodeId = int(folder.split(";")[0])
+                blockSize = self._disk._blockSize
+                inodeBlock = int(inodeId / int(blockSize / Inode.INODESIZE)) + 1
+                currentInode = inodeId % int(blockSize / Inode.INODESIZE)
+
+                block = self.read(inodeBlock)
+                splitedBlock = block.replace("\n", "").split("|")
+                return Inode.read(splitedBlock[currentInode], inodeId)
+        return -1
+
+    def listDirectory(self):
+        content = self.seek(self._current)
+        files = content.replace("|\n", "").split("/")
+        ls = []
+        for file in files:
+            if(len(file) > 0):
+                file = file.split(";")[1]
+                ls.append(file)
+        ls.pop(0)
+        if(self._current._id != self._root._id):
+            ls.pop(0)
+        return ls
+
     def getCurrent(self):
         return self._current
 
-    def setCurrent(self, inode):
+    def setCurrent(self, inode, name):
         self._current = inode
+        self._currentName = name
 
     def shutdown():
         pass
 
-    def close(fd):
-        pass
-
-    def delete(self, inode):
+    def delete(self, inode, name):
         inodeContent = self.seek(self._current)
-        inodeContent = Inode.removeInode(inodeContent, inode._id)
+        inodeContent = Inode.removeInode(inodeContent, inode._id, name)
         inodeContent = inodeContent.replace("\n", "")
 
         for inodeBlock in self._current._pointers:
@@ -121,11 +152,3 @@ class FileSystem:
         self.write(free)
         self._superBlock.setFirstFreeBlock(self._disk.getFirstFreeBlock())
         self._disk.write(0, self._superBlock.formatBlock())
-
-
-#fs = FileSystem(20, 100, 10)
-#fs.create("arquivo.txt", "|esse vai ser o arquivo mais foda que vc já viu na vida!!! Porém, ele vai ocupar dois blocos, mas pra isso tem que escrever mais")
-#fs.create("arquivo2.txt", "|esse vai ser o arquivo2 mais foda que vc já viu na vida!!!")
-#fs.create("arquivo3.txt", "|esse vai ser o arquivo3 mais foda que vc já viu na vida!!!")
-#fs.create("arquivo4.txt", "|esse vai ser o arquivo4 mais foda que vc já viu na vida!!!")
-#fs.create("arquivo5.txt", "|esse vai ser o arquivo5 mais foda que vc já viu na vida!!!")

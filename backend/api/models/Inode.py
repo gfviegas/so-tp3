@@ -1,4 +1,5 @@
 import datetime
+import ast
 
 date = datetime.datetime
 
@@ -17,7 +18,10 @@ class Inode:
 
     def set(self, id, content, pointers, flag):
         self._id = id
-        self._fileSize = len(content)
+        if(isinstance(content, int)):
+            self._fileSize = content
+        else:
+            self._fileSize = len(content)
         self._updatedAt = date.now()
         self._flag = flag
         self._pointers = pointers
@@ -31,11 +35,17 @@ class Inode:
         content = "|".join(content)
         return content
 
-    def removeInode(content, id):
+    def removeInode(content, id, name):
         content = content.split("|")
-        content[0] = content[0].replace("/"+str(id), "")
+        content[0] = content[0].replace("/"+str(id)+";"+name, "")
         content = "|".join(content)
         return content
+
+    def read(diskInode, id):
+        splited = diskInode.split(";")
+        inode = Inode()
+        inode.set(id, int(splited[1]), ast.literal_eval(splited[2]), int(splited[0]))
+        return inode
 
     def formatInode(self):
         line = str(self._flag) + ";" + str(self._fileSize) + ";["

@@ -15,18 +15,22 @@ class Manager:
     def createDirectory(self, name):
         return self._fileSystem.create(name, "|")
 
-    def openDirectory(self, inode):
-        if(inode == "root"):
-            inode = self._fileSystem._root
-        self._fileSystem.setCurrent(inode)
+    def openDirectory(self, name):
+        inode = self._fileSystem.getInode(name)
+        self._fileSystem.setCurrent(inode, name)
 
-    def openFile(self, inode):
+    def listDirectory(self):
+        return self._fileSystem.listDirectory()
+
+    def openFile(self, name):
+        inode = self._fileSystem.getInode(name)
         file = self._fileSystem.seek(inode)
         file = file.split("|")[1].replace("\n", "")
         return file
 
-    def rename(inode, name):
+    def rename(oldName, newName):
         pass
 
-    def remove(self, inode):
-        return self._fileSystem.delete(inode)
+    def remove(self, name):
+        inode = self._fileSystem.getInode(name)
+        return self._fileSystem.delete(inode, name)
