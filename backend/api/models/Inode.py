@@ -25,9 +25,9 @@ class Inode:
     def getInodeId(x, y, iNumber):
         return ((x - 1) * iNumber) + y
 
-    def appendInode(content, id):
+    def appendInode(content, id, name):
         content = content.split("|")
-        content[0] = content[0] + "/" + str(id)
+        content[0] = content[0] + "/" + str(id) + ";" + name
         content = "|".join(content)
         return content
 
