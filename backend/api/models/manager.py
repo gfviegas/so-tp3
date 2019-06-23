@@ -10,15 +10,15 @@ class Manager:
                                       simulationId)
 
     def createFile(self, name, content):
-        return self._fileSystem.create(name, "|"+content)
+        return self._fileSystem.create(name, '|{}'.format(content))
 
     def createDirectory(self, name):
-        return self._fileSystem.create(name, "|")
+        return self._fileSystem.create(name, '|')
 
     def openDirectory(self, name):
         inode = self._fileSystem.getInode(name)
         if(inode == -1):
-            raise Exception("Diretório não encontrado")
+            raise Exception('Diretório não encontrado')
         self._fileSystem.setCurrent(inode, name)
 
     def listDirectory(self):
@@ -26,17 +26,17 @@ class Manager:
 
     def openFile(self, name):
         inode = self._fileSystem.getInode(name)
-        if(inode == -1):
-            raise Exception("Arquivo não encontrado")
+        if (inode == -1):
+            raise Exception('Arquivo não encontrado')
         file = self._fileSystem.seek(inode)
-        file = file.split("|")[1].replace("\n", "")
+        file = file.split('|')[1].replace('\n', '')
         return file
 
-    def rename(oldName, newName):
+    def rename(self, oldName, newName):
         pass
 
     def remove(self, name):
         inode = self._fileSystem.getInode(name)
         if(inode == -1):
-            raise Exception(name + " não pôde ser removido")
+            raise Exception(name + ' não pôde ser removido')
         return self._fileSystem.delete(inode, name)

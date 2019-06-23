@@ -1,3 +1,5 @@
+import sys
+
 from flask_restful import Resource, reqparse
 
 from werkzeug import FileStorage
@@ -29,9 +31,9 @@ class SimulationExpress(Resource):
         f = TextIOWrapper(BytesIO(bytesData), 'utf-8')
         for line in f.readlines():
             command = line.rstrip()
+            print(command, flush=True, file=sys.stdout)
             output.append('** Processando o comando: {}.'.format(command))
             output.append(self.processCommand(command))
-            output.append('.')
 
         return {'output': output}, 201
 
@@ -39,26 +41,37 @@ class SimulationExpress(Resource):
     def emptyFunc(self, args=list()):
         return 'Argumentos: {}'.format(', '.join(str(x) for x in args))
 
-    def getAssociatedCommands(self, args):
-        return {
-            'pwd': self.emptyFunc,
-            'create': self.simManager.createFile(args[0], args[1]),
-            'rm': self.simManager.remove(args[0]),
-            'rn': self.simManager.rename(args[0], args[1]),
-            'cat': self.simManager.rename(args[0]),
-            'ls': self.emptyFunc,
-            'mkdir': self.simManager.createDirectory(args[0]),
-            'rndir': self.simManager.remove(args[0], args[1]),
-            'rmdir': self.simManager.remove(args[0]),
-            'cd': self.simManager.openDirectory(args[0])
-        }
+    def runAssociatedCommand(self, operation, args):
+        # print(args, flush=True, file=sys.stdout)
 
+        if (operation == 'pwd'):
+            return self.emptyFunc()
+        elif (operation == 'create'):
+            return self.simManager.createFile(args[0], args[1])
+        elif (operation == 'rm'):
+            return self.simManager.remove(args[0])
+        elif (operation == 'rn'):
+            return self.simManager.rename(args[0], args[1])
+        elif (operation == 'cat'):
+            return self.simManager.openFile(args[0])
+        elif (operation == 'ls'):
+            return self.simManager.listDirectory()
+        elif (operation == 'mkdir'):
+            return self.simManager.createDirectory(args[0])
+        elif (operation == 'rndir'):
+            return self.simManager.remove(args[0], args[1])
+        elif (operation == 'rmdir'):
+            return self.simManager.remove(args[0])
+        elif (operation == 'cd'):
+            return self.simManager.openDirectory(args[0])
+
+        return 'Comando não encontrado: {}'.format(operation)
 
     def processCommand(self, command):
         commandSplitted = findall(r'(?:"[^"]*"|[^\s"])+', command)
         operation = commandSplitted[0]
         args = commandSplitted[1:]
 
-        output = self.getAssociatedCommands(args)[operation]
+        output = self.runAssociatedCommand(operation, args)
 
         return 'Comando executado. \n Saída: {}'.format(output)

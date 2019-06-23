@@ -5,6 +5,7 @@ if __name__ == '__main__':
     idAleatorio = str(uuid.uuid4())[:8]
     manager = Manager(40, 100, idAleatorio)
     manager.createFile("arquivo.txt", "esse vai ser o arquivo mais foda que vc já viu na vida!!! Porém, ele vai ocupar dois blocos, mas pra isso tem que escrever mais")
+    print(manager.openFile("arquivo.txt"))
     manager.createFile("arquivo2.txt", "esse vai ser o arquivo2 mais foda que vc já viu na vida!!!")
     manager.createFile("arquivo3.txt", "esse vai ser o arquivo3 mais foda que vc já viu na vida!!!")
     manager.createFile("arquivo4.txt", "esse vai ser o arquivo4 mais foda que vc já viu na vida!!!")
