@@ -12,7 +12,8 @@ rm.connect()
 
 # Carregando RESTful Resources
 from api.resources.setup import SetupList
-from api.resources.simulations import SimulationsList, Simulation
+from api.resources.simulations import (SimulationsList, Simulation,
+                                       SimulationDirectory)
 from api.resources.express import SimulationExpress
 
 # Boot Flask App e API
@@ -24,11 +25,14 @@ api = Api(bp)
 api.add_resource(SetupList, '/')
 api.add_resource(SimulationsList, '/simulations')
 api.add_resource(Simulation, '/simulations/<string:simulationId>')
-api.add_resource(SimulationExpress, '/simulations/<string:simulationId>/express')
+api.add_resource(SimulationDirectory,
+                 '/simulations/<string:simulationId>/directory')
+api.add_resource(SimulationExpress,
+                 '/simulations/<string:simulationId>/express')
 
 # Registrando Blueprint
 app.register_blueprint(bp, url_prefix='/api')
 
 if __name__ == '__main__':
     app.config['simulations'] = {}
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True, threaded=False)

@@ -9,7 +9,7 @@ from re import findall
 from flask import g
 
 from api.settings.redis import rm
-from api.settings.simulations import get_simulations
+from api.settings.simulations import get_simulation
 
 class SimulationExpress(Resource):
     def post(self, simulationId):
@@ -25,8 +25,7 @@ class SimulationExpress(Resource):
         stream = args['file'].stream
         bytesData = stream.read()
 
-        simulations = get_simulations()
-        self.simManager = simulations[simulationId]
+        self.simManager = get_simulation(simulationId)
 
         f = TextIOWrapper(BytesIO(bytesData), 'utf-8')
         for line in f.readlines():
@@ -42,8 +41,6 @@ class SimulationExpress(Resource):
         return 'Argumentos: {}'.format(', '.join(str(x) for x in args))
 
     def runAssociatedCommand(self, operation, args):
-        # print(args, flush=True, file=sys.stdout)
-
         if (operation == 'pwd'):
             return self.emptyFunc()
         elif (operation == 'create'):
