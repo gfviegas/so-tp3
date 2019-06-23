@@ -48,6 +48,43 @@ class Simulation(Resource):
             'diskSize': simManager.blockSize * simManager.numBlocks
         }, 200
 
+class SimulationFile(Resource):
+    def get(self, simulationId):
+        # Verifica se a simulação existe
+        exists = rm.redis.sismember('simulations', simulationId)
+
+        if (not exists):
+            return {'error': 'simulation_not_found'}, 404
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('file', type=str, required=True,
+                            help='Nome do Arquivo')
+
+        args = parser.parse_args(strict=True)
+        simManager = get_simulation(simulationId)
+
+        return simManager.openFile(args['file']), 200
+
+    def post(self, simulationId):
+        # Verifica se a simulação existe
+        exists = rm.redis.sismember('simulations', simulationId)
+
+        if (not exists):
+            return {'error': 'simulation_not_found'}, 404
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str, required=True,
+                            help='Nome do Arquivo')
+        parser.add_argument('content', type=str, required=True,
+                            help='Conteúdo do Arquivo')
+
+        args = parser.parse_args(strict=True)
+        simManager = get_simulation(simulationId)
+
+        simManager.createFile(args['name'], args['content'])
+
+        return simManager.listDirectory(), 201
+
 class SimulationDirectory(Resource):
     def get(self, simulationId):
         # Verifica se a simulação existe
@@ -59,6 +96,24 @@ class SimulationDirectory(Resource):
         simManager = get_simulation(simulationId)
 
         return simManager.listDirectory(), 200
+
+    def post(self, simulationId):
+        # Verifica se a simulação existe
+        exists = rm.redis.sismember('simulations', simulationId)
+
+        if (not exists):
+            return {'error': 'simulation_not_found'}, 404
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str, required=True,
+                            help='Nome do Diretório')
+
+        args = parser.parse_args(strict=True)
+        simManager = get_simulation(simulationId)
+
+        simManager.createDirectory(args['name'])
+
+        return simManager.listDirectory(), 201
 
     def put(self, simulationId):
         # Verifica se a simulação existe

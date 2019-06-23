@@ -24,6 +24,8 @@ const styles = theme => ({
     paddingLeft: theme.spacing(4)
   },
   btnSection: {
+    display: 'flex',
+    justifyContent: 'space-around',
     marginTop: theme.spacing(2)
   },
   btn: {
@@ -72,11 +74,11 @@ class FileTree extends React.Component {
       const icon = (i.type === 'folder') ? <FolderIcon /> : <FileIcon />
 
       return (
-        <ListItem button key={i.title} selected={i.open} onClick={(e) => this.handleClickListItem(e, i)}>
+        <ListItem button key={i.name} selected={i.open} onClick={(e) => this.handleClickListItem(e, i)}>
           <ListItemIcon>
             {icon}
           </ListItemIcon>
-          <ListItemText primary={i.title} />
+          <ListItemText primary={i.name} />
         </ListItem>
       )
     })
@@ -107,12 +109,6 @@ class FileTree extends React.Component {
           </ListItem>
           <Collapse in unmountOnExit>
             <List component='div' disablePadding className={classes.paddedList}>
-              <ListItem button key={'parent'}>
-                <ListItemIcon>
-                  <FolderIcon />
-                </ListItemIcon>
-                <ListItemText primary='..' />
-              </ListItem>
               {this.renderItems()}
             </List>
           </Collapse>
@@ -135,8 +131,8 @@ class FileTree extends React.Component {
         </Menu>
 
         <div className={classes.btnSection}>
-          <Button variant='contained' size='medium' color='secondary' onClick={handleNewFolder}> Novo Diretório </Button>
-          <Button variant='outlined' size='medium' color='secondary' className={classes.btn} onClick={handleNewFile}> Novo Arquivo </Button>
+          <Button variant='contained' size='small' color='secondary' onClick={handleNewFolder}> Novo Diretório </Button>
+          <Button variant='outlined' size='small' color='secondary' className={classes.btn} onClick={handleNewFile}> Novo Arquivo </Button>
         </div>
       </section>
     )

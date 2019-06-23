@@ -5,12 +5,12 @@ import axios from 'axios'
 import { withStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Paper from '@material-ui/core/Paper'
-import Divider from '@material-ui/core/Divider'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 
 import Header from '../header'
 import FileTree from './fileTree'
+import FileInfo from './fileInfo'
 import RenameDialog from './renameDialog'
 import CreateDialog from './createDialog'
 import background from '../../assets/images/geometric.jpg'
@@ -49,21 +49,13 @@ const styles = theme => ({
   fileTree: {
     width: '100%'
   },
+  fileInfo: {
+    width: '100%'
+  },
   statDescription: {
     paddingTop: theme.spacing(2),
     color: '#81005d',
     fontWeight: 500
-  },
-  fileTitle: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    alignItems: 'flex-end'
-  },
-  divider: {
-    width: '100%',
-    margin: '1rem auto'
   }
 })
 
@@ -74,23 +66,17 @@ class SimulationHome extends React.Component {
     super(props)
 
     const inode = {
-      wd: '/',
-      items: [
-        { title: 'usr', type: 'folder', open: false },
-        { title: 'etc', type: 'folder', open: false },
-        { title: 'var', type: 'folder', open: false },
-        { title: 'log', type: 'folder', open: false },
-        { title: '2.txt', type: 'file', open: true },
-        { title: '3.txt', type: 'file', open: false }
-      ]
+      wd: 'root',
+      items: []
     }
 
-    const currentFile = {
-      id: 9102109,
-      title: '2.txt',
-      content: '123456',
-      size: 48
-    }
+    // const currentFile = {
+    //   id: 9102109,
+    //   name: '2.txt',
+    //   content: '123456',
+    //   size: 48
+    // }
+    const currentFile = null
 
     this.state = { simulation: null, inode, currentFile, renameDialogOpen: false, renameDialogCurrentName: null, createDialogOpen: false }
     this.simulationId = props.match.params.simulationId
@@ -98,6 +84,7 @@ class SimulationHome extends React.Component {
 
   componentDidMount () {
     this.fetchSimulationInfo(this.props)
+    this.fetchWDInfo()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -114,6 +101,18 @@ class SimulationHome extends React.Component {
     }
   }
 
+  fetchWDInfo = async () => {
+    try {
+      const { data } = await axios.get(`/api/simulations/${this.simulationId}/directory`)
+      const { inode } = this.state
+
+      inode.items = data.map(i => Object.assign(i, { open: false }))
+      this.setState({ inode })
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   handleItemOpen = async (item) => {
     const { inode } = this.state
 
@@ -122,15 +121,12 @@ class SimulationHome extends React.Component {
     // Se for arquivo...
     if (item.type === 'file') {
       inode.items = inode.items.map(i => {
-        const open = (i.title === item.title)
+        const open = (i.name === item.name)
         return { ...i, open }
       })
 
       try {
-        // const currentFile = await axios.get(`/api/simulations/${this.simulationId}/file/${item.id}`)
-
-        // Isso é só um mock
-        const currentFile = { ...item, id: 29191, content: new Date().toISOString(), size: parseInt(Math.random() * 15 + 20) }
+        const currentFile = await axios.get(`/api/simulations/${this.simulationId}/file`, { params: { file: item.name } })
         return this.setState({ inode, currentFile })
       } catch (e) {
         console.error(e)
@@ -141,7 +137,7 @@ class SimulationHome extends React.Component {
 
     // Se for diretorio...
     // TODO: Chamar api, carregar o inode
-    inode.wd += `${item.title}/`
+    inode.wd += `${item.name}/`
     this.setState({ inode })
   }
 
@@ -149,13 +145,13 @@ class SimulationHome extends React.Component {
     const { inode } = this.state
 
     // TODO: Verificar se é diretório, chamar api..
-    inode.items = inode.items.filter(i => i.title !== item.title)
+    inode.items = inode.items.filter(i => i.name !== item.name)
     this.setState({ inode })
   }
 
   handleItemRename = async (item) => {
     this.activeItem = item
-    this.setState({ renameDialogCurrentName: item.title, renameDialogOpen: true })
+    this.setState({ renameDialogCurrentName: item.name, renameDialogOpen: true })
   }
 
   closeRenameDialog = () => {
@@ -166,7 +162,7 @@ class SimulationHome extends React.Component {
     console.log(fileName)
     this.closeRenameDialog()
 
-    this.activeItem.title = fileName
+    this.activeItem.name = fileName
   }
 
   createFile = () => {
@@ -181,9 +177,16 @@ class SimulationHome extends React.Component {
     this.setState({ createDialogOpen: false })
   }
 
-  submitCreateDialog = (payload) => {
-    console.log(payload)
+  submitCreateDialog = async (payload) => {
+    const { inode } = this.state
     this.closeCreateDialog()
+
+    // É arquivo ou diretório?
+    const url = (payload.content) ? `/api/simulations/${this.simulationId}/file` : `/api/simulations/${this.simulationId}/directory`
+
+    const { data } = await axios.post(url, payload)
+    inode.items = data.map(i => Object.assign(i, { open: false }))
+    this.setState({ inode })
   }
 
   render () {
@@ -228,12 +231,7 @@ class SimulationHome extends React.Component {
 
             <Grid item md={6}>
               <Paper elevation={24} className={classes.paper}>
-                <div className={classes.fileTitle}>
-                  <Typography variant='h4'> {currentFile.title} </Typography>
-                  <Typography variant='overline'> <strong> {currentFile.size} </strong> bytes. </Typography>
-                </div>
-                <Divider variant='middle' className={classes.divider} />
-                <Typography variant='body2'> {currentFile.content} </Typography>
+                <FileInfo file={currentFile} className={classes.fileInfo} />
               </Paper>
             </Grid>
           </Grid>

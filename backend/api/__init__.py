@@ -13,7 +13,7 @@ rm.connect()
 # Carregando RESTful Resources
 from api.resources.setup import SetupList
 from api.resources.simulations import (SimulationsList, Simulation,
-                                       SimulationDirectory)
+                                       SimulationDirectory, SimulationFile)
 from api.resources.express import SimulationExpress
 
 # Boot Flask App e API
@@ -27,6 +27,8 @@ api.add_resource(SimulationsList, '/simulations')
 api.add_resource(Simulation, '/simulations/<string:simulationId>')
 api.add_resource(SimulationDirectory,
                  '/simulations/<string:simulationId>/directory')
+api.add_resource(SimulationFile,
+                 '/simulations/<string:simulationId>/file')
 api.add_resource(SimulationExpress,
                  '/simulations/<string:simulationId>/express')
 

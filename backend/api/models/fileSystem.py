@@ -121,9 +121,9 @@ class FileSystem:
             if(len(file) > 0):
                 file = file.split(";")[1]
                 if(len(file.split(".")) > 1):
-                    ls.append({'type': file, 'name': 'file'})
+                    ls.append({'name': file, 'type': 'file'})
                 else:
-                    ls.append({'type': file, 'name': 'folder'})
+                    ls.append({'name': file, 'type': 'folder'})
         ls.pop(0)
         if (self._current._id != self._root._id):
             ls.pop(0)
