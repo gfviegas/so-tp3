@@ -33,10 +33,10 @@ class Manager:
         return file
 
     def rename(self, oldName, newName):
-        pass
+        return self._fileSystem.rename(oldName, newName)
 
     def returnCurrent(self):
-        return this._self._currentName
+        return self._fileSystem._currentName
 
     def remove(self, name):
         inode = self._fileSystem.getInode(name)
