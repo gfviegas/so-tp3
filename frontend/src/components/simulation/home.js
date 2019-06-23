@@ -101,8 +101,7 @@ class SimulationHome extends React.Component {
   fetchWDInfo = async () => {
     try {
       const { data } = await axios.get(`/api/simulations/${this.simulationId}/directory`)
-      let { inode } = this.state
-      inode = data
+      const inode = data
       inode.items = this.treatInodeList(data.items)
       this.setState({ inode })
     } catch (e) {
@@ -111,7 +110,7 @@ class SimulationHome extends React.Component {
   }
 
   handleItemOpen = async (item) => {
-    const { inode } = this.state
+    let { inode } = this.state
 
     // TODO: Chamar api..
 
@@ -138,8 +137,8 @@ class SimulationHome extends React.Component {
     // Se for diretorio...
     try {
       const { data } = await axios.put(`/api/simulations/${this.simulationId}/directory`, { directory: item.name })
-      inode.items = this.treatInodeList(data)
-      inode.wd += `${item.name}/`
+      inode = data
+      inode.items = this.treatInodeList(inode.items)
       return this.setState({ inode })
     } catch (e) {
       console.error(e)
@@ -183,14 +182,14 @@ class SimulationHome extends React.Component {
   }
 
   submitCreateDialog = async (payload) => {
-    const { inode } = this.state
     this.closeCreateDialog()
 
     // É arquivo ou diretório?
     const url = (payload.content) ? `/api/simulations/${this.simulationId}/file` : `/api/simulations/${this.simulationId}/directory`
 
     const { data } = await axios.post(url, payload)
-    inode.items = data.map(i => Object.assign(i, { open: false }))
+    const inode = data
+    inode.items = this.treatInodeList(data.items)
     this.setState({ inode })
   }
 
