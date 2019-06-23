@@ -47,8 +47,9 @@ class FileSystem:
         if(content.split("|")[1] == ''):
             content = Inode.appendInode(content, self._root._id, self._rootName)
             content = Inode.appendInode(content, self._current._id, "..")
-
-        content = Inode.appendInode(content, id, name)
+        else:
+            content = Inode.appendInode(content, id, name)
+            
         pointers = self._fillBlocks(content)
         inode.set(id, content, pointers, 1)
         self.write(inode)
@@ -139,7 +140,7 @@ class FileSystem:
             self._path = [{ 'name': 'root', 'inode': self._root }]
         else:
             self._path.append({ 'name': name, 'inode': inode })
-            
+
         self._current = inode
         self._currentName = name
 
