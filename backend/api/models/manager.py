@@ -35,6 +35,9 @@ class Manager:
     def rename(self, oldName, newName):
         pass
 
+    def returnCurrent(self):
+        return this._self._currentName
+
     def remove(self, name):
         inode = self._fileSystem.getInode(name)
         if(inode == -1):
