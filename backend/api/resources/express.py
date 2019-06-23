@@ -4,12 +4,14 @@ from werkzeug import FileStorage
 from io import TextIOWrapper, BytesIO
 from random import randint
 from re import findall
+from flask import g
 
 from api.settings.redis import rm
-from api.resources.simulations import simulations
+from api.settings.simulations import get_simulations
 
 class SimulationExpress(Resource):
     def post(self, simulationId):
+
         parse = reqparse.RequestParser()
         parse.add_argument('file', type=FileStorage, location='files',
                            required=True, help='Arquivo de Entrada')
@@ -21,13 +23,14 @@ class SimulationExpress(Resource):
         stream = args['file'].stream
         bytesData = stream.read()
 
+        simulations = get_simulations()
         self.simManager = simulations[simulationId]
 
         f = TextIOWrapper(BytesIO(bytesData), 'utf-8')
         for line in f.readlines():
             command = line.rstrip()
             output.append('** Processando o comando: {}.'.format(command))
-            # output.append(self.processCommand(command))
+            output.append(self.processCommand(command))
             output.append('.')
 
         return {'output': output}, 201
@@ -41,8 +44,11 @@ class SimulationExpress(Resource):
             'pwd': self.emptyFunc,
             'create': self.simManager.createFile(args[0], args[1]),
             'rm': self.simManager.remove(args[0]),
+            'rn': self.simManager.rename(args[0], args[1]),
+            'cat': self.simManager.rename(args[0]),
             'ls': self.emptyFunc,
             'mkdir': self.simManager.createDirectory(args[0]),
+            'rndir': self.simManager.remove(args[0], args[1]),
             'rmdir': self.simManager.remove(args[0]),
             'cd': self.simManager.openDirectory(args[0])
         }
@@ -55,4 +61,4 @@ class SimulationExpress(Resource):
 
         output = self.getAssociatedCommands(args)[operation]
 
-        return 'Comando {} executado. \n Saída: {}'.format(operation, output)
+        return 'Comando executado. \n Saída: {}'.format(output)

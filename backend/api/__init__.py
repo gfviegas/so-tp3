@@ -30,4 +30,5 @@ api.add_resource(SimulationExpress, '/simulations/<string:simulationId>/express'
 app.register_blueprint(bp, url_prefix='/api')
 
 if __name__ == '__main__':
+    app.config['simulations'] = {}
     app.run(host='0.0.0.0', debug=True)
