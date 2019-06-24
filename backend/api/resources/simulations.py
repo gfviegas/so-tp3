@@ -83,6 +83,9 @@ class SimulationFile(Resource):
 
         simManager.createFile(args['name'], args['content'])
 
+        # Atualiza instancia da simulacao no cache
+        push_simulation(simulationId, simManager)
+
         return simManager.listDirectory(), 201
 
 class SimulationDirectory(Resource):
@@ -113,6 +116,9 @@ class SimulationDirectory(Resource):
 
         simManager.createDirectory(args['name'])
 
+        # Atualiza instancia da simulacao no cache
+        push_simulation(simulationId, simManager)
+
         return simManager.listDirectory(), 201
 
     def put(self, simulationId):
@@ -130,7 +136,52 @@ class SimulationDirectory(Resource):
 
         simManager.openDirectory(args['directory'])
 
-        # Atualiza instancia da simulacao no cache pois foi alterado o WD
+        # Atualiza instancia da simulacao no cache
         push_simulation(simulationId, simManager)
 
         return simManager.listDirectory(), 200
+
+class SimulationItem(Resource):
+    def patch(self, simulationId):
+        # Verifica se a simulação existe
+        exists = rm.redis.sismember('simulations', simulationId)
+
+        if (not exists):
+            return {'error': 'simulation_not_found'}, 404
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str, required=True,
+                            help='Nome do Item Atual')
+        parser.add_argument('new_name', type=str, required=True,
+                            help='Nome novo do Item')
+
+        args = parser.parse_args(strict=True)
+        simManager = get_simulation(simulationId)
+
+        simManager.rename(args['name'], args['new_name'])
+
+        # Atualiza instancia da simulacao no cache
+        push_simulation(simulationId, simManager)
+
+        return simManager.listDirectory(), 201
+
+    def delete(self, simulationId):
+        # Verifica se a simulação existe
+        exists = rm.redis.sismember('simulations', simulationId)
+
+        if (not exists):
+            return {'error': 'simulation_not_found'}, 404
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str, required=True,
+                            help='Nome do Item')
+
+        args = parser.parse_args(strict=True)
+        simManager = get_simulation(simulationId)
+
+        simManager.remove(args['name'])
+
+        # Atualiza instancia da simulacao no cache
+        push_simulation(simulationId, simManager)
+
+        return simManager.listDirectory(), 201

@@ -68,7 +68,7 @@ const styles = theme => ({
 })
 
 class NewSimulation extends React.Component {
-  state = { checked: false, numBlocks: 0, blockSize: 0, snackbarParams: { msg: null, variant: 'success' } }
+  state = { checked: false, numBlocks: 20, blockSize: 100, snackbarParams: { msg: null, variant: 'success' } }
 
   updateBlockSize = (e, blockSize) => {
     this.setState({ blockSize })
@@ -83,8 +83,6 @@ class NewSimulation extends React.Component {
     const { history } = this.props
     const { blockSize, numBlocks } = this.state
     const payload = { blockSize, numBlocks }
-
-    console.log(payload)
 
     try {
       const { data } = await axios.post('/api/simulations', payload)
@@ -119,14 +117,14 @@ class NewSimulation extends React.Component {
               <div>
                 <InputLabel htmlFor='blockSizeSlider' className={classes.sliderLabel}> Tamanho do Bloco </InputLabel>
                 <div className={classes.sliderContainer}>
-                  <Slider id='blockSizeSlider' className={classes.slider} value={blockSize} min={0} max={1024} step={2} onChange={this.updateBlockSize} />
+                  <Slider id='blockSizeSlider' className={classes.slider} value={blockSize} min={100} max={1024} step={2} onChange={this.updateBlockSize} />
                   <Typography className={classes.sliderValue}> {blockSize} Bytes </Typography>
                 </div>
               </div>
               <div>
                 <InputLabel htmlFor='numBlocksSlider' className={classes.sliderLabel}> Número de Blocos </InputLabel>
                 <div className={classes.sliderContainer}>
-                  <Slider id='numBlocksSlider' className={classes.slider} value={numBlocks} min={10} max={100} step={1} onChange={this.updateNumBlocks} />
+                  <Slider id='numBlocksSlider' className={classes.slider} value={numBlocks} min={20} max={400} step={1} onChange={this.updateNumBlocks} />
                   <Typography className={classes.sliderValue}> {numBlocks} Blocos </Typography>
                 </div>
               </div>

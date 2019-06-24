@@ -16,7 +16,8 @@ rm.connect()
 # Carregando RESTful Resources
 from api.resources.setup import SetupList
 from api.resources.simulations import (SimulationsList, Simulation,
-                                       SimulationDirectory, SimulationFile)
+                                       SimulationDirectory, SimulationFile,
+                                       SimulationItem)
 from api.resources.express import SimulationExpress
 
 # Configurando timezone
@@ -36,6 +37,8 @@ api.add_resource(SimulationDirectory,
                  '/simulations/<string:simulationId>/directory')
 api.add_resource(SimulationFile,
                  '/simulations/<string:simulationId>/file')
+api.add_resource(SimulationItem,
+                 '/simulations/<string:simulationId>/item')
 api.add_resource(SimulationExpress,
                  '/simulations/<string:simulationId>/express')
 

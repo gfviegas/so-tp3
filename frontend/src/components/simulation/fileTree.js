@@ -38,7 +38,6 @@ class FileTree extends React.Component {
   options = ['Abrir', 'Renomear', 'Excluir']
 
   handleClickListItem = (event, activeItem) => {
-    console.log(activeItem)
     this.setState({ anchorEl: event.currentTarget, activeItem })
   }
 

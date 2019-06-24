@@ -2,12 +2,12 @@ from os import path
 
 class Disk(object):
     # Valores minimos e máximos, em unidades, da quantidade de blocos
-    NUM_BLOCKS_MIN = 10
-    NUM_BLOCKS_MAX = 100
+    NUM_BLOCKS_MIN = 20
+    NUM_BLOCKS_MAX = 400
 
     # Valores minimos e máximos, em bytes, do tamanho do bloco
-    BLOCK_SIZE_MIN = 100 # 500 bytes
-    BLOCK_SIZE_MAX = 4096 # 4 KB
+    BLOCK_SIZE_MIN = 100
+    BLOCK_SIZE_MAX = 1024
 
     def __init__(self, numBlocks=100, blockSize=1024, simulationId=None):
         if (simulationId is None):

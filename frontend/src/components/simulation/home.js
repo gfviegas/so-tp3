@@ -112,8 +112,6 @@ class SimulationHome extends React.Component {
   handleItemOpen = async (item) => {
     let { inode } = this.state
 
-    // TODO: Chamar api..
-
     // Se for arquivo...
     if (item.type === 'file') {
       inode.items = inode.items.map(i => {
@@ -146,11 +144,17 @@ class SimulationHome extends React.Component {
   }
 
   handleItemDelete = async (item) => {
-    const { inode } = this.state
+    try {
+      const { data } = await axios.delete(`/api/simulations/${this.simulationId}/item`, {
+        params: { name: item.name }
+      })
 
-    // TODO: Verificar se é diretório, chamar api..
-    inode.items = inode.items.filter(i => i.name !== item.name)
-    this.setState({ inode })
+      const inode = data
+      inode.items = this.treatInodeList(data.items)
+      this.setState({ inode })
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   handleItemRename = async (item) => {
@@ -162,11 +166,21 @@ class SimulationHome extends React.Component {
     this.setState({ renameDialogOpen: false })
   }
 
-  submitRenameDialog = (fileName) => {
-    console.log(fileName)
+  submitRenameDialog = async (fileName) => {
     this.closeRenameDialog()
 
-    this.activeItem.name = fileName
+    try {
+      const { data } = await axios.patch(`/api/simulations/${this.simulationId}/item`, {
+        name: this.activeItem.name,
+        new_name: fileName
+      })
+
+      const inode = data
+      inode.items = this.treatInodeList(data.items)
+      this.setState({ inode })
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   createFile = () => {
