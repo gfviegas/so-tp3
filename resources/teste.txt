@@ -1,0 +1,6 @@
+pwd
+mkdir folderTest
+cd folderTest
+create fileTest.txt "meu texto é super legal"
+cd /
+ls

@@ -3,7 +3,7 @@ version: '3.7'
 services:
   redis:
     image: redis
-    container_name: ecocard-cache
+    container_name: cache
     volumes:
       - ./tmp:/data
     ports:

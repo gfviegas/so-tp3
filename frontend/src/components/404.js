@@ -1,5 +1,13 @@
 import React from 'react'
 
-const Notfound = () => <h1>404.</h1>
+// import PropTypes from 'prop-types'
 
-export default Notfound
+class NotFound extends React.Component {
+  render () {
+    return (
+      <input type='file' />
+    )
+  }
+}
+
+export default NotFound

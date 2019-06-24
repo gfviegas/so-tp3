@@ -1,0 +1,8 @@
+create arquivo.txt "esse vai ser o arquivo mais foda que vc já viu na vida!!! Porém, ele vai ocupar dois blocos, mas pra isso tem que escrever mais"
+cat arquivo.txt
+create arquivo2.txt "esse vai ser o arquivo2 mais foda que vc já viu na vida!!!"
+rn arquivo2.txt novo2.txt
+create arquivo3.txt "esse vai ser o arquivo3 mais foda que vc já viu na vida!!!"
+create arquivo4.txt "esse vai ser o arquivo4 mais foda que vc já viu na vida!!!"
+create arquivo5.txt "esse vai ser o arquivo5 mais foda que vc já viu na vida!!!"
+rm arquivo3.txt

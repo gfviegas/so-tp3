@@ -1,32 +1,32 @@
 import React from 'react'
-import { Route, Link, BrowserRouter as Router, Switch } from 'react-router-dom'
 
 // Componentes
-import Home from '../components/home/home'
+import Splash from '../components/splash/splash'
+import SimulationHome from '../components/simulation/home'
+import SimulationExpress from '../components/simulation/express'
 import Test from '../components/test/test'
 import Notfound from '../components/404'
-
-function RouteWithSubRoutes (route) {
-  return (
-    <Route
-      exact={route.exact}
-      path={route.path}
-      render={props => (
-        // pass the sub-routes down to keep nesting
-        <route.component {...props} routes={route.routes} />
-      )}
-    />
-  )
-}
 
 const routes = [
   {
     path: '/',
-    component: Home,
+    component: Splash,
+    exact: true
+  },
+  {
+    path: '/simulacao/:simulationId',
+    component: SimulationHome,
+    header: () => <span> Home </span>,
+    exact: true
+  },
+  {
+    path: '/simulacao/:simulationId/express',
+    component: SimulationExpress,
     exact: true
   },
   {
     path: '/teste',
+    header: () => <span> Teste </span>,
     component: Test
   },
   {
@@ -34,21 +34,4 @@ const routes = [
   }
 ]
 
-const routing = (
-  <Router>
-    <div>
-      <ul>
-        <li> <Link to='/'> Home </Link> </li>
-        <li> <Link to='/teste'> Teste </Link> </li>
-      </ul>
-
-      <Switch>
-        {routes.map((route, i) => (
-          <RouteWithSubRoutes key={i} {...route} />
-        ))}
-      </Switch>
-    </div>
-  </Router>
-)
-
-export { routes, routing, RouteWithSubRoutes }
+export { routes }
