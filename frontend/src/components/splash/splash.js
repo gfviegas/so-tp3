@@ -46,13 +46,18 @@ class Splash extends React.Component {
     return response.data
   }
 
+  handleDeleteSimulations = async () => {
+    await axios.delete('/api/simulations')
+    this.setState({ simulations: [] })
+  }
+
   currentComponent = () => {
     const { formVisible, simulations } = this.state
     if (formVisible) {
       return <NewSimulation visible={formVisible} toggleForm={this.toggleForm} />
     }
 
-    return <WelcomeBox simulations={simulations} showForm={this.toggleForm} />
+    return <WelcomeBox simulations={simulations} showForm={this.toggleForm} handleDeleteSimulations={this.handleDeleteSimulations} />
   }
 
   toggleForm = (e) => {

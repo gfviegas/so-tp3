@@ -35,12 +35,17 @@ const styles = theme => ({
     marginTop: theme.spacing(4),
     alignSelf: 'center',
     textAlign: 'center'
+  },
+  emptyList: {
+    border: '1px dashed lightpink',
+    paddingTop: theme.spacing(15),
+    paddingBottom: theme.spacing(15)
   }
 })
 
 class WelcomeBox extends React.Component {
   renderList = () => {
-    const { simulations } = this.props
+    const { simulations, classes } = this.props
 
     if (simulations && simulations.length) {
       return (
@@ -49,12 +54,14 @@ class WelcomeBox extends React.Component {
     }
 
     return (
-      <Typography variant='h5' color='error' align='center'> Lista vazia <span role='img' aria-label='sad'>😕</span> </Typography>
+      <div className={classes.emptyList}>
+        <Typography variant='h5' color='error' align='center'> Lista vazia <span role='img' aria-label='sad'>😕</span> </Typography>
+      </div>
     )
   }
 
   render () {
-    const { classes, showForm } = this.props
+    const { classes, showForm, handleDeleteSimulations } = this.props
 
     return (
       <Grow in>
@@ -65,6 +72,7 @@ class WelcomeBox extends React.Component {
             </div>
             {this.renderList()}
             <Button variant='contained' size='large' color='secondary' className={classes.createBtn} onClick={showForm}> Nova Simulação </Button>
+            <Button variant='contained' size='small' color='default' className={classes.createBtn} onClick={handleDeleteSimulations}> Excluir Tudo </Button>
           </Box>
           <Box mt={5}> <BasicFooter /> </Box>
         </article>
@@ -75,6 +83,7 @@ class WelcomeBox extends React.Component {
 WelcomeBox.propTypes = {
   classes: PropTypes.object.isRequired,
   showForm: PropTypes.func.isRequired,
+  handleDeleteSimulations: PropTypes.func.isRequired,
   simulations: PropTypes.arrayOf(PropTypes.string).isRequired
 }
 

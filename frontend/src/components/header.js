@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
@@ -43,6 +44,11 @@ const styles = theme => ({
 })
 
 class Header extends React.Component {
+  handleDeleteSimulation = async (e) => {
+    const { simulationId } = this.props.match.params
+    await axios.delete(`/api/simulations/${simulationId}`)
+  }
+
   render () {
     const { classes, match } = this.props
     const { simulationId } = match.params
@@ -61,6 +67,9 @@ class Header extends React.Component {
             </Button>
             <Button color='inherit'>
               <NavLink exact to={`/simulacao/${simulationId}`} activeClassName={classes.linkActive} className={classes.headerLink}> Interativo </NavLink>
+            </Button>
+            <Button color='inherit'>
+              <NavLink to={`/`} onClick={this.handleDeleteSimulation} className={classes.headerLink}> Excluir </NavLink>
             </Button>
             <Button color='inherit'>
               <NavLink exact to={`/`} className={classes.headerLink}> Sair </NavLink>

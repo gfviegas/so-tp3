@@ -21,7 +21,7 @@ const styles = theme => ({
 })
 
 class SimulationList extends React.Component {
-  test = (s) => {
+  navigateTo = (s) => {
     const { history } = this.props
     history.push(`/simulacao/${s}`)
   }
@@ -34,13 +34,13 @@ class SimulationList extends React.Component {
         {simulations.map(s => (
           <div key={s}>
             <ListItem>
-              <Link className={classes.link} to={null} onClick={() => this.test(s)}>
+              <Link className={classes.link} to={null} onClick={() => this.navigateTo(s)}>
                 <ListItemIcon className={classes.icon}>
                   <ArrowRightAltIcon />
                 </ListItemIcon>
               </Link>
 
-              <Link className={classes.link} to={null} onClick={() => this.test(s)}>
+              <Link className={classes.link} to={null} onClick={() => this.navigateTo(s)}>
                 <ListItemText primary={`Simulação #` + s} />
               </Link>
             </ListItem>

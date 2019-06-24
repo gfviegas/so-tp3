@@ -86,7 +86,7 @@ class NewSimulation extends React.Component {
 
     try {
       const { data } = await axios.post('/api/simulations', payload)
-      this.setState({ snackbarParams: { msg: `Simulação criada! #${data.id}. Redirecionando...`, variant: 'success' } })
+      this.setState({ snackbarParams: { msg: `Simulação #${data.id} criada!\nRedirecionando...`, variant: 'success' } })
 
       window.setTimeout(() => {
         history.push(`/simulacao/${data.id}/express`)

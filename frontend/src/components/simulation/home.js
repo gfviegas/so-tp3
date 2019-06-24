@@ -137,7 +137,7 @@ class SimulationHome extends React.Component {
       const { data } = await axios.put(`/api/simulations/${this.simulationId}/directory`, { directory: item.name })
       inode = data
       inode.items = this.treatInodeList(inode.items)
-      return this.setState({ inode })
+      return this.setState({ inode, currentFile: null })
     } catch (e) {
       console.error(e)
     }

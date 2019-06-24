@@ -1,7 +1,9 @@
 from flask_restful import Resource, reqparse
 
 import uuid
-from api.settings.redis import rm
+from os import path, listdir, remove
+
+from api.settings.redis import rm, um
 from api.models.manager import Manager
 from api.settings.simulations import get_simulation, push_simulation
 
@@ -28,9 +30,18 @@ class SimulationsList(Resource):
         s = rm.redis.sadd('simulations', id)
         return {'status': s, 'id': id}, 201
 
-    def delete(self, id):
-        s = rm.redis.srem('simulations', id)
-        return {'status': s}, 204
+    def delete(self):
+        # Limpa o cache
+        rm.redis.flushdb()
+
+        # Remove tudo da pasta disks
+        dirname = path.dirname(__file__)
+        dir = path.join(dirname, '../disks')
+        for f in listdir(dir):
+            if not f.endswith('.gitkeep'):
+                remove(path.join(dir, f))
+
+        return {}, 204
 
 class Simulation(Resource):
     def get(self, simulationId):
@@ -47,6 +58,11 @@ class Simulation(Resource):
             'blockSize': simManager.blockSize,
             'diskSize': simManager.blockSize * simManager.numBlocks
         }, 200
+
+    def delete(self, simulationId):
+        rm.redis.srem('simulations', simulationId)
+        um.redis.delete(simulationId)
+        return {}, 204
 
 class SimulationFile(Resource):
     def get(self, simulationId):

@@ -20,7 +20,6 @@ class SimulationExpress(Resource):
 
         args = parse.parse_args()
         output = list()
-        output.append('ok')
 
         stream = args['file'].stream
         bytesData = stream.read()
@@ -31,7 +30,7 @@ class SimulationExpress(Resource):
         for line in f.readlines():
             command = line.rstrip()
             print(command, flush=True, file=sys.stdout)
-            output.append('** Processando o comando: {}.'.format(command))
+            output.append('>> Processando o comando: {}. <<'.format(command))
             output.append(self.processCommand(command))
 
         return {'output': output}, 201
@@ -44,23 +43,30 @@ class SimulationExpress(Resource):
         if (operation == 'pwd'):
             return self.emptyFunc()
         elif (operation == 'create'):
-            return self.simManager.createFile(args[0], args[1])
+            self.simManager.createFile(args[0], args[1])
+            return None
         elif (operation == 'rm'):
-            return self.simManager.remove(args[0])
+            self.simManager.remove(args[0])
+            return None
         elif (operation == 'rn'):
-            return self.simManager.rename(args[0], args[1])
+            self.simManager.rename(args[0], args[1])
+            return None
         elif (operation == 'cat'):
-            return self.simManager.openFile(args[0])
+            return self.simManager.openFile(args[0])['content']
         elif (operation == 'ls'):
             return self.simManager.listDirectory()
         elif (operation == 'mkdir'):
-            return self.simManager.createDirectory(args[0])
+            self.simManager.createDirectory(args[0])
+            return None
         elif (operation == 'rndir'):
-            return self.simManager.remove(args[0], args[1])
+            self.simManager.remove(args[0], args[1])
+            return None
         elif (operation == 'rmdir'):
-            return self.simManager.remove(args[0])
+            self.simManager.remove(args[0])
+            return None
         elif (operation == 'cd'):
-            return self.simManager.openDirectory(args[0])
+            self.simManager.openDirectory(args[0])
+            return None
 
         return 'Comando não encontrado: {}'.format(operation)
 
@@ -70,5 +76,7 @@ class SimulationExpress(Resource):
         args = commandSplitted[1:]
 
         output = self.runAssociatedCommand(operation, args)
+        if output is None:
+            return ''
 
-        return 'Comando executado. \n Saída: {}'.format(output)
+        return '\n\t~> Saída: {} \n'.format(output)

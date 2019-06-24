@@ -81,6 +81,7 @@ class SimulationExpress extends React.Component {
   }
 
   componentDidMount () {
+    window.scrollTo(0, 0)
     this.addRecord('\t ****** Terminal Output ******')
   }
 
